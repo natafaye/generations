@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set;  }
 
     public MapManager MapManager;
-    public MeepleManager MeepleManager;
+    public EntityManager EntityManager;
     public CameraManager CameraManager;
 
     public int MapWidth = 8;
@@ -28,13 +28,13 @@ public class GameManager : MonoBehaviour
     {
         MapManager.Init(MapWidth, MapHeight);
         CameraManager.Init(MapWidth, MapHeight);
-        MeepleManager.Init();
+        EntityManager.Init();
         InvokeRepeating(nameof(Tick), 2f, 2f);
     }
 
     void Tick()
     {
-        MeepleManager.Tick();
+        EntityManager.Tick();
     }
 
     void Update()

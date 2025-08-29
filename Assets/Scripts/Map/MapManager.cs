@@ -11,6 +11,9 @@ public class MapManager : MonoBehaviour
 	private MapCell[,] _cells;
     private Vector2Int[] _movementsByDistance;
 
+	// Job manager
+	public JobManager JobManager;
+
 	// Unity objects
 	public TileBase GrassTile;
     public TileBase WaterTile;
@@ -34,6 +37,8 @@ public class MapManager : MonoBehaviour
         _grid = GetComponentInChildren<Grid>();
         _cells = new MapCell[Width + 2, Height + 2];
         _movementsByDistance = MovementsByDistanceGenerator.Generate(Width, Height);
+
+		JobManager = new();
 
 		GenerateMap();
     }

@@ -7,7 +7,7 @@ public enum ItemType
     Other
 }
 
-public class Item : MonoBehaviour
+public class Item : Selectable
 {
     public ItemType Type;
 }

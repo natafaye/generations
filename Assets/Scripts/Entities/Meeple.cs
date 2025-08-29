@@ -1,17 +1,12 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
-public class Meeple : MonoBehaviour, IPointerClickHandler
+public class Meeple : Selectable
 {
-    public event Action<Meeple> OnClick;
-
     private Rigidbody2D _rigidbody;
-    private SpriteRenderer _spriteRenderer;
     private Animator _animator;
 
     private readonly Color _noTint = new(0, 0, 0, 0);
@@ -54,6 +49,7 @@ public class Meeple : MonoBehaviour, IPointerClickHandler
             {
                 _spriteRenderer.material.SetColor("_Tint", _noTint);
             }
+            InvokeChange();
         }
     }
 
@@ -66,6 +62,7 @@ public class Meeple : MonoBehaviour, IPointerClickHandler
         {
             _food = value;
             InDistress = _food < 0;
+            InvokeChange();
         }
     }
 
@@ -84,6 +81,7 @@ public class Meeple : MonoBehaviour, IPointerClickHandler
             {
                 transform.rotation = new();
             }
+            InvokeChange();
         }
     }
     private int _sleep = 5;
@@ -97,20 +95,7 @@ public class Meeple : MonoBehaviour, IPointerClickHandler
             if (Asleep && _sleep >= 5) Asleep = false;
             // Fall asleep when you hit zero
             if (_sleep <= 0) Asleep = true;
-        }
-    }
-
-    private bool _selected = false;
-    public bool Selected
-    {
-        get { return _selected; }
-        set
-        {
-            _selected = value;
-            if (_selected)
-                _spriteRenderer.material.SetInt("_ShowOutline", 1);
-            else
-                _spriteRenderer.material.SetInt("_ShowOutline", 0);
+            InvokeChange();
         }
     }
 
@@ -128,11 +113,6 @@ public class Meeple : MonoBehaviour, IPointerClickHandler
         if (!_rigidbody) _rigidbody = GetComponent<Rigidbody2D>();
         _rigidbody.position = cell.WorldPosition;
         StartCoroutine(RefreshPath());
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        OnClick?.Invoke(this);
     }
 
     public void Tick()

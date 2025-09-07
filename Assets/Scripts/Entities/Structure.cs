@@ -17,7 +17,6 @@ public class Structure : Selectable
         set
         {
             _health = value;
-            InvokeChange();
         }
     }
 

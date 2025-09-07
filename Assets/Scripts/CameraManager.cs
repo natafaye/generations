@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 
 public class CameraManager : MonoBehaviour
 {
+    // Input Manager
+    public InputManager InputManager;
+
     // Pan
     public float PanSpeed = 150;
     public float PanDampening = 15f;
@@ -31,6 +34,10 @@ public class CameraManager : MonoBehaviour
         MapHeight = mapHeight;
         transform.position = new Vector3(MapWidth / 2, MapHeight / 2, -10);
         _camera = GetComponentInChildren<Camera>();
+
+        InputManager.OnNavigateInput += OnNavigate;
+        InputManager.OnPointInput += OnPoint;
+        InputManager.OnScrollWheelInput += OnScrollWheel;
     }
 
     void Update()

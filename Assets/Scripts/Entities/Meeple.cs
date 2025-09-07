@@ -49,7 +49,6 @@ public class Meeple : Selectable
             {
                 _spriteRenderer.material.SetColor("_Tint", _noTint);
             }
-            InvokeChange();
         }
     }
 
@@ -62,7 +61,6 @@ public class Meeple : Selectable
         {
             _food = value;
             InDistress = _food < 0;
-            InvokeChange();
         }
     }
 
@@ -81,7 +79,6 @@ public class Meeple : Selectable
             {
                 transform.rotation = new();
             }
-            InvokeChange();
         }
     }
     private int _sleep = 5;
@@ -95,7 +92,6 @@ public class Meeple : Selectable
             if (Asleep && _sleep >= 5) Asleep = false;
             // Fall asleep when you hit zero
             if (_sleep <= 0) Asleep = true;
-            InvokeChange();
         }
     }
 

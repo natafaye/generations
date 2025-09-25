@@ -1,13 +1,27 @@
-public enum StructureType
+using UnityEngine;
+
+public enum StructureCategory
 {
     Plant,
     Wall,
     Bed
 }
 
-public class Structure : Selectable
+public class Structure : MonoBehaviour, IEntity
 {
-    public StructureType Type;
+    [field: SerializeField]
+    public string Name { get; set; }
+
+    [field: SerializeField]
+    public StructureType Type { get; set; }
+    // Handle type inheritance of IEntityType to StructureType
+    IEntityType IEntity.Type { get => Type; set => Type = (StructureType)value; }
+    
+    public bool IsSelected { get; set; }
+
+    public Vector2Int MapPosition { get; set; }
+    public Transform Transform { get; set; }
+    public SpriteRenderer SpriteRenderer { get; set; }
 
     private int _maxHealth = 10;
     private int _health;
@@ -20,8 +34,10 @@ public class Structure : Selectable
         }
     }
 
-    void Start()
+    void Awake()
     {
         Health = _maxHealth;
+        Transform = transform;
+        SpriteRenderer = GetComponent<SpriteRenderer>();
     }
 }

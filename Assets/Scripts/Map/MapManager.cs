@@ -8,18 +8,22 @@ public class MapManager : MonoBehaviour
 	// Game data
 	public int Width;
     public int Height;
+	public BiomeType Biome;
 	private MapCell[,] _cells;
     private Vector2Int[] _movementsByDistance;
+	
+	// Entity Manager
+	public EntityManager EntityManager;
 
 	// Job manager
 	public JobManager JobManager;
 
 	// Unity objects
-	public TileBase GrassTile;
-    public TileBase WaterTile;
-    public TileBase EdgeTile;
-    private Grid _grid;
+	private Grid _grid;
     private Tilemap _tilemap;
+
+	public FirmnessType[] FirmnessTypes;
+	public CellType WaterCellType;
 	
 	// Debugging
 	public bool DisplayGridGizmos;
@@ -28,24 +32,28 @@ public class MapManager : MonoBehaviour
 	private readonly float _cellSize = 1;
 	private readonly Vector2 _worldBottomLeft = Vector2.zero;
 
-    public void Init(int width, int height)
-    {
-        Width = width;
-        Height = height;
+	public void Init(int width, int height)
+	{
+		Width = width;
+		Height = height;
 
-        _tilemap = GetComponentInChildren<Tilemap>();
-        _grid = GetComponentInChildren<Grid>();
-        _cells = new MapCell[Width + 2, Height + 2];
-        _movementsByDistance = MovementsByDistanceGenerator.Generate(Width, Height);
-
-		JobManager = new();
-
-		GenerateMap();
+		_tilemap = GetComponentInChildren<Tilemap>();
+		_grid = GetComponentInChildren<Grid>();
+		_movementsByDistance = MovementsByDistanceGenerator.Generate(Width, Height);
+		_cells = MapGenerator.Generate(Width, Height, Biome, _tilemap, EntityManager, FirmnessTypes, WaterCellType);
+		
+		JobManager = new(this);
     }
+
+	public void Spawn(IEntity entity, Vector2Int mapPosition)
+	{
+		entity.MapPosition = mapPosition;
+		entity.Transform.position = new(mapPosition.x + 0.5f, mapPosition.y + 0.5f, 0);
+	}
 
 	bool InBounds(int x, int y)
 	{
-		return x >= 0 && x < Width + 2 && y >= 0 && y < Height + 2;
+		return x >= 0 && x < Width && y >= 0 && y < Height;
 	}
 
     public Vector3 MapToWorld(Vector2Int mapPosition)
@@ -97,47 +105,6 @@ public class MapManager : MonoBehaviour
 
 		// If there are no passable cells on the map return null
 		return null;
-	}
-
-	private void GenerateMap()
-	{
-		// Add 2 to the width and height for the transparent edge cells
-		for (int y = 0; y < Height + 2; ++y)
-		{
-			for (int x = 0; x < Width + 2; ++x)
-			{
-				TileBase tile;
-				CellData data = new();
-
-				if (x == 0 || y == 0 || x == Width + 1 || y == Width + 1)
-				{
-					// Put edge tiles around the outside
-					tile = EdgeTile;
-					data.Passable = false;
-				}
-				else
-				{
-					// 20% Chance of Water
-					// 80% Chance of Grass
-					if (Random.Range(1, 5) == 1)
-					{
-						tile = WaterTile;
-						data.Passable = false;
-					}
-					else
-					{
-						tile = GrassTile;
-						data.Passable = true;
-					}
-				}
-
-				var mapPosition = new Vector2Int(x, y);
-				var worldPosition = MapToWorld(mapPosition);
-				_cells[x, y] = new MapCell(data, mapPosition, worldPosition);
-
-				_tilemap.SetTile(new Vector3Int(x, y, 0), tile);
-			}
-		}
 	}
 
 	public List<MapCell> GetNeighbours(MapCell cell)

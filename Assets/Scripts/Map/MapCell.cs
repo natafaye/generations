@@ -3,22 +3,41 @@ using UnityEngine;
 public class MapCell : IHeapItem<MapCell> 
 {
 	// Data about that cell's tile (passable, walk cost, etc)
-	public CellData CellData;
 	public bool Passable
 	{
-		get { return CellData.Passable; }
+		get { return CellType.Passable; }
 	}
 
 	// Position in the map by index
 	public Vector2Int MapPosition;
-	// Unity world position of the cell center
-	public Vector3 WorldPosition;
-
-	public MapCell(CellData cellData, Vector2Int mapPosition, Vector3 worldPosition)
+	// Unity world position of the cell corner
+	public Vector3 WorldPosition
 	{
-		CellData = cellData;
+		get { return new(MapPosition.x + 0.5f, MapPosition.y + 0.5f, 0); }
+	}
+
+	public float height;
+	public float firmness;
+
+
+	// Layers of the Cell
+	public bool HasRoof;
+	public IEntity Contents;
+	// TODO: Floor
+	public CellType CellType;
+
+
+	public MapCell(CellType cellType, Vector2Int mapPosition)
+	{
+		CellType = cellType;
 		MapPosition = mapPosition;
-		WorldPosition = worldPosition;
+	}
+
+	public void MoveToCell(IEntity entity)
+	{
+		entity.MapPosition = MapPosition;
+		entity.Transform.position = WorldPosition;
+		Contents = entity;
 	}
 
 

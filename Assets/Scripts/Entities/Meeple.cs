@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
-public class Meeple : Selectable
+public class Meeple : MonoBehaviour, IEntity
 {
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -12,7 +12,10 @@ public class Meeple : Selectable
     private readonly Color _noTint = new(0, 0, 0, 0);
     public Color DistressTint = new(1, 0, 0, 0.5f);
 
-    public string Name;
+    [field: SerializeField]
+    public string Name { get; set; }
+    [field: SerializeField]
+    public IEntityType Type { get; set; }
 
     // Map movement
     public MapManager Map;
@@ -21,7 +24,30 @@ public class Meeple : Selectable
     private static WaitForSeconds _waitFor25 = new(.25f);
     int targetIndex;
 
-    private float _baseSpeed = 1;
+    public Vector2Int MapPosition { get; set; }
+    public Transform Transform { get; set; }
+    public SpriteRenderer SpriteRenderer { get; set; }
+
+    // Job
+    public JobWork CurrentJob;
+
+    private bool _isSelected = false;
+    public bool IsSelected
+    {
+        get { return _isSelected; }
+        set
+        {
+            _isSelected = value;
+            
+            if (!SpriteRenderer) SpriteRenderer = GetComponent<SpriteRenderer>();
+            if (_isSelected)
+                SpriteRenderer.material.SetInt("_ShowOutline", 1);
+            else
+                SpriteRenderer.material.SetInt("_ShowOutline", 0);
+        }
+    }
+
+    private float _baseSpeed = 4;
     public float Speed
     {
         get
@@ -43,17 +69,16 @@ public class Meeple : Selectable
             _inDistress = value;
             if (_inDistress)
             {
-                _spriteRenderer.material.SetColor("_Tint", DistressTint);
+                SpriteRenderer.material.SetColor("_Tint", DistressTint);
             }
             else
             {
-                _spriteRenderer.material.SetColor("_Tint", _noTint);
+                SpriteRenderer.material.SetColor("_Tint", _noTint);
             }
         }
     }
 
     private int _food = 10;
-    private static readonly int hungryLevel = 2;
     public int Food
     {
         get { return _food; }
@@ -97,9 +122,11 @@ public class Meeple : Selectable
 
     void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        Transform = transform;
+        SpriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        MovementTarget = null;
         Food = 10;
     }
 
@@ -117,9 +144,27 @@ public class Meeple : Selectable
 
         if (Asleep) Sleep++;
         else Sleep--;
+
+        if (CurrentJob == null)
+        {
+            CurrentJob = Map.JobManager.ReserveJob();
+            if (CurrentJob == null) return;
+            MovementTarget = CurrentJob.target.Transform;
+        }
+        // else if(transform.position CurrentJob.target.MapPosition)
+        // {
+        //     CurrentJob.Work();
+        // }
+
     }
 
 	IEnumerator RefreshPath() {
+        Debug.Log("Trying to refresh path");
+
+        while (MovementTarget == null) yield return _waitFor25;
+
+        Debug.Log("Refreshing path");
+
 		Vector2 targetPositionOld = (Vector2)MovementTarget.position + Vector2.up; // ensure != to target.position initially
 			
 		while (true) {

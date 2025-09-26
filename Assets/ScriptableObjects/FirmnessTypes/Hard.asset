@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 682f23bec82c3864685531e65d3759fc, type: 3}
   m_Name: Hard
   m_EditorClassIdentifier: 
-  Wall: {fileID: 11400000, guid: 0f5cce7691926844a86f5faa2fce55cc, type: 2}
-  Flat: {fileID: 11400000, guid: 0ebcc242e68cd3b44907badaef643c97, type: 2}
-  Wet: {fileID: 11400000, guid: 0ebcc242e68cd3b44907badaef643c97, type: 2}
+  Wall: {fileID: 11400000, guid: 621b5c20da6d00440b854267efb3be60, type: 2}
+  Flat: {fileID: 11400000, guid: 14141e9fbdb12a44dabb9ad050d04dba, type: 2}
+  Wet: {fileID: 11400000, guid: e71c57927a1b91c43986a299f093aefc, type: 2}

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NoiseGenerator
 {
-    public static float[,] Generate(int width, int height, Wave[] waves, float scale = 1)
+    public static float[,] Generate(int seed, int width, int height, Wave[] waves, float scale = 1)
     {
         float[,] noiseMap = new float[width, height];
 
@@ -23,7 +23,7 @@ public class NoiseGenerator
                 foreach (Wave wave in waves)
                 {
                     noiseMap[x, y] += wave.amplitude * Mathf.PerlinNoise(
-                        samplePosX * wave.frequency + wave.seed, samplePosY * wave.frequency + wave.seed
+                        samplePosX * wave.frequency + seed, samplePosY * wave.frequency + seed
                     );
                     normalization += wave.amplitude;
                 }

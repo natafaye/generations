@@ -10,10 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 62788880ddb636948b1f22ac48c4ede5, type: 3}
-  m_Name: Stone Wall
+  m_Name: Tree
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Stone Wall
-  <Sprite>k__BackingField: {fileID: -8850544511768451777, guid: 28f2a666b94ffb74489c5d1c03a89d36, type: 3}
-  category: 1
-  availableJobs:
-  - {fileID: 11400000, guid: 5621652022e42d4458dde42a6be75458, type: 2}
+  <Name>k__BackingField: Tree
+  <Sprite>k__BackingField: {fileID: 8755711497313211584, guid: 11386934c45f8844485e8aca90ca0892, type: 3}
+  category: 0
+  availableJobs: []

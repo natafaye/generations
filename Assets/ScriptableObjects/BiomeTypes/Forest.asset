@@ -29,5 +29,8 @@ MonoBehaviour:
   - seed: 199.36
     frequency: 0.1
     amplitude: 0.5
-  FirmnessWaves: []
+  FirmnessWaves:
+  - seed: 621
+    frequency: 0.03
+    amplitude: 1
   MoistureType: {fileID: 11400000, guid: eb27fbb3c6b0bd04b82bbbfc2f36f0b9, type: 2}

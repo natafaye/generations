@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 682f23bec82c3864685531e65d3759fc, type: 3}
   m_Name: SemiFirm
   m_EditorClassIdentifier: 
-  Wall: {fileID: 11400000, guid: 0ebcc242e68cd3b44907badaef643c97, type: 2}
-  Flat: {fileID: 11400000, guid: 0ed2ee9aefef9b741a7124db676c9625, type: 2}
-  Wet: {fileID: 11400000, guid: 15b7bb49dfc34ca46bdf776736fc9b59, type: 2}
+  Wall: {fileID: 11400000, guid: 621b5c20da6d00440b854267efb3be60, type: 2}
+  Flat: {fileID: 11400000, guid: 10162e4ff8a2a3140b460ce9918378cb, type: 2}
+  Wet: {fileID: 11400000, guid: e71c57927a1b91c43986a299f093aefc, type: 2}

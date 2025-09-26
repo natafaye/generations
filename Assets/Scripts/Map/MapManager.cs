@@ -11,6 +11,7 @@ public class MapManager : MonoBehaviour
 	public BiomeType Biome;
 	private MapCell[,] _cells;
     private Vector2Int[] _movementsByDistance;
+	public int Seed;
 	
 	// Entity Manager
 	public EntityManager EntityManager;
@@ -36,14 +37,16 @@ public class MapManager : MonoBehaviour
 	{
 		Width = width;
 		Height = height;
+		
+		Seed = Random.Range(0, 600);
 
 		_tilemap = GetComponentInChildren<Tilemap>();
 		_grid = GetComponentInChildren<Grid>();
 		_movementsByDistance = MovementsByDistanceGenerator.Generate(Width, Height);
-		_cells = MapGenerator.Generate(Width, Height, Biome, _tilemap, EntityManager, FirmnessTypes, WaterCellType);
-		
+		_cells = MapGenerator.Generate(Seed, Width, Height, Biome, _tilemap, EntityManager, FirmnessTypes, WaterCellType);
+
 		JobManager = new(this);
-    }
+	}
 
 	public void Spawn(IEntity entity, Vector2Int mapPosition)
 	{

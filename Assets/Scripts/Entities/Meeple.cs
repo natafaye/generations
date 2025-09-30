@@ -1,12 +1,11 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
 public class Meeple : MonoBehaviour, IEntity
 {
-    private Rigidbody2D _rigidbody;
     private Animator _animator;
 
     private readonly Color _noTint = new(0, 0, 0, 0);
@@ -24,7 +23,12 @@ public class Meeple : MonoBehaviour, IEntity
     private static WaitForSeconds _waitFor25 = new(.25f);
     int targetIndex;
 
-    public Vector2Int MapPosition { get; set; }
+    public Vector2Int MapPosition
+    {
+        get { return Map.WorldToMap(Transform.position); }
+        set { Transform.position = Map.MapToWorld(value); }
+    }
+
     public Transform Transform { get; set; }
     public SpriteRenderer SpriteRenderer { get; set; }
 
@@ -78,7 +82,7 @@ public class Meeple : MonoBehaviour, IEntity
         }
     }
 
-    private int _food = 10;
+    private int _food = 100;
     public int Food
     {
         get { return _food; }
@@ -106,7 +110,7 @@ public class Meeple : MonoBehaviour, IEntity
             }
         }
     }
-    private int _sleep = 5;
+    private int _sleep = 100;
     public int Sleep
     {
         get { return _sleep; }
@@ -125,37 +129,56 @@ public class Meeple : MonoBehaviour, IEntity
         Transform = transform;
         SpriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
-        _rigidbody = GetComponent<Rigidbody2D>();
         MovementTarget = null;
-        Food = 10;
     }
 
     public void Spawn(MapManager map, MapCell cell)
     {
         Map = map;
-        if (!_rigidbody) _rigidbody = GetComponent<Rigidbody2D>();
-        _rigidbody.position = cell.WorldPosition;
+        transform.position = cell.WorldPosition;
         StartCoroutine(RefreshPath());
     }
 
     public void Tick()
     {
+        // Food
         Food--;
 
+        // Sleep
         if (Asleep) Sleep++;
         else Sleep--;
 
+        // if (CurrentJob != null)
+        // {
+        //     Debug.Log("Current Job Map Position: " + CurrentJob.target.MapPosition);
+        //     Debug.Log("Movement Target: " + MovementTarget.position);
+        //     Debug.Log("Meeple Map Position: " + MapPosition);
+        //     Debug.Log("Distance Between: " + DistanceBetween(MapPosition, CurrentJob.target.MapPosition));
+        // }
+
+        // Work
         if (CurrentJob == null)
         {
             CurrentJob = Map.JobManager.ReserveJob();
             if (CurrentJob == null) return;
             MovementTarget = CurrentJob.target.Transform;
         }
-        // else if(transform.position CurrentJob.target.MapPosition)
-        // {
-        //     CurrentJob.Work();
-        // }
+        else if (CurrentJob.Finished)
+        {
+            Map.JobManager.FinishJob(CurrentJob);
+            CurrentJob = null;
+        }
+        else if (DistanceBetween(MapPosition, CurrentJob.target.MapPosition) < 1.5)
+        {
+            MovementTarget = null;
+            CurrentJob.Work();
+        }
 
+    }
+
+    public double DistanceBetween(Vector2 a, Vector2 b)
+    {
+        return Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));
     }
 
 	IEnumerator RefreshPath() {
@@ -195,7 +218,7 @@ public class Meeple : MonoBehaviour, IEntity
 					currentWaypoint = _path[targetIndex];
 				}
 
-                _rigidbody.MovePosition(Vector2.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime));
+                transform.position = Vector2.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
                 _animator.SetFloat("MoveX", currentWaypoint.x * Speed);
                 _animator.SetFloat("MoveY", currentWaypoint.y * Speed);
 				yield return null;

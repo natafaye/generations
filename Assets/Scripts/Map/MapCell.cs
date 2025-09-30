@@ -13,7 +13,7 @@ public class MapCell : IHeapItem<MapCell>
 	// Unity world position of the cell corner
 	public Vector3 WorldPosition
 	{
-		get { return new(MapPosition.x + 0.5f, MapPosition.y + 0.5f, 0); }
+		get { return new(MapPosition.x, MapPosition.y, 0); }
 	}
 
 	public float height;

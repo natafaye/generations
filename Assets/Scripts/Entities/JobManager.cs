@@ -8,6 +8,8 @@ public class JobWork
     public int workLeft;
     public JobManager manager;
 
+    public bool Finished { get { return workLeft == 0; } }
+
     public JobWork(JobWorkType jobType, IEntity jobTarget, JobManager jobManager)
     {
         type = jobType;
@@ -18,7 +20,6 @@ public class JobWork
 
     public void Work() {
         workLeft--;
-        if(workLeft == 0) manager.FinishJob(this);
     }
 }
 

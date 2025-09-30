@@ -73,7 +73,15 @@ public class EntityManager : MonoBehaviour
         // Check if a different selectable has been clicked
         GameObject clickedObject = rayHit.collider.gameObject;
         var newSelected = clickedObject.GetComponent<IEntity>();
-        if (newSelected == null || newSelected == Selected) return;
+        if (newSelected == Selected) return;
+
+        _selectedDisplay.Clear();
+
+        if (newSelected == null)
+        {
+            Selected = null;
+            return;
+        }
 
         // Update the selected
         if (Selected != null) Selected.IsSelected = false;
@@ -81,7 +89,6 @@ public class EntityManager : MonoBehaviour
         Selected = newSelected;
 
         // Update the selection display
-        _selectedDisplay.Clear();
         if (Selected is Meeple meeple)
         {
             VisualElement newElement = new();
@@ -91,6 +98,10 @@ public class EntityManager : MonoBehaviour
         }
         else if (Selected is Structure structure)
         {
+            Debug.Log("Structure!");
+            Label label = new();
+            label.text = structure.Name;
+            _selectedDisplay.Add(label);
             foreach (JobWorkType job in structure.Type.availableJobs)
             {
                 Button jobButton = new();

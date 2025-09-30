@@ -20,13 +20,16 @@ public class MapGenerator
                 CellType cellType;
                 StructureType structureType = null;
 
-                var cellHeight = (int)MathF.Round(heightMap[x, y] * 10);
+                // TODO: Outside of range of array
+                var cellHeight = (int)MathF.Floor(heightMap[x, y] * 10);
+                // Debug.Log("Cell Height: " + cellHeight);
                 HeightLevel heightLevel = biome.MoistureType.Heights[cellHeight];
                 
-                var cellFirmness = (int)MathF.Round(firmnessMap[x, y] * 3);
+                var cellFirmness = (int)MathF.Floor(firmnessMap[x, y] * 3);
+                // Debug.Log("Cell Firmness: " + cellFirmness);
                 FirmnessType firmnessType = firmnessTypes[cellFirmness];
 
-                var cellFertility = (int)MathF.Round(firmnessMap[x, y] * 100);
+                var cellFertility = (int)MathF.Floor(firmnessMap[x, y] * 101);
                 if (cellFirmness != 1) cellFertility = 0;
 
                 switch (heightLevel)

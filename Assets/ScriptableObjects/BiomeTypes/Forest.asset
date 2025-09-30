@@ -13,24 +13,17 @@ MonoBehaviour:
   m_Name: Forest
   m_EditorClassIdentifier: 
   Name: Forest
-  CellTypes:
-  - Type: {fileID: 11400000, guid: af9e0004edaffdd42a3af904ae635d82, type: 2}
-    Percentage: 20
-    StructureTypes: []
-  - Type: {fileID: 11400000, guid: 10162e4ff8a2a3140b460ce9918378cb, type: 2}
-    Percentage: 100
-    StructureTypes:
-    - Type: {fileID: 11400000, guid: 802bbdd01d987bd4db2c3e2936a9dc48, type: 2}
-      Percentage: 10
   HeightWaves:
-  - seed: 56
-    frequency: 0.05
+  - frequency: 0.05
     amplitude: 1
-  - seed: 199.36
-    frequency: 0.1
+  - frequency: 0.1
     amplitude: 0.5
   FirmnessWaves:
-  - seed: 621
-    frequency: 0.03
+  - frequency: 0.03
     amplitude: 1
+  FertilityWaves: []
   MoistureType: {fileID: 11400000, guid: eb27fbb3c6b0bd04b82bbbfc2f36f0b9, type: 2}
+  StructureTypes:
+  - {fileID: 11400000, guid: ccca8c878e05c01448c6e6f2af8813bc, type: 2}
+  - {fileID: 11400000, guid: 802bbdd01d987bd4db2c3e2936a9dc48, type: 2}
+  - {fileID: 11400000, guid: 51a0e7a750c71c34f815bef412ce1a06, type: 2}

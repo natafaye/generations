@@ -1,0 +1,254 @@
+fileFormatVersion: 2
+guid: 7060b7708af185d43b1980f163650b40
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7633303723083878540
+    second: noun-harvest-7838588_0
+  - first:
+      213: -5294514366932072111
+    second: noun-harvest-7838588_1
+  - first:
+      213: 8581802732271004538
+    second: noun-harvest-7838588_2
+  - first:
+      213: 4700157954351950428
+    second: noun-harvest-7838588_3
+  - first:
+      213: -5146465999930657989
+    second: noun-harvest-7838588_4
+  - first:
+      213: -1762580317343211268
+    second: noun-harvest-7838588_5
+  - first:
+      213: -7079060786400634146
+    second: noun-harvest-7838588_6
+  - first:
+      213: 412089279119370592
+    second: noun-harvest-7838588_7
+  - first:
+      213: 1589602985989338883
+    second: noun-harvest-7838588_8
+  - first:
+      213: 1485813246125269876
+    second: noun-harvest-7838588_9
+  - first:
+      213: -5429609815537058242
+    second: noun-harvest-7838588_10
+  - first:
+      213: 5563817248340054162
+    second: noun-harvest-7838588_11
+  - first:
+      213: -8979529702107888581
+    second: noun-harvest-7838588_12
+  - first:
+      213: 7915758025717772099
+    second: noun-harvest-7838588_13
+  - first:
+      213: 9047437624914575893
+    second: noun-harvest-7838588_14
+  - first:
+      213: 8761977813748365579
+    second: noun-harvest-7838588_15
+  - first:
+      213: 6685738117632909193
+    second: noun-harvest-7838588_16
+  - first:
+      213: 828821464904295595
+    second: noun-harvest-7838588_17
+  - first:
+      213: -2040449983850300771
+    second: noun-harvest-7838588_18
+  - first:
+      213: -1731989215224840843
+    second: noun-harvest-7838588_19
+  - first:
+      213: -9195153681474979120
+    second: noun-harvest-7838588_20
+  - first:
+      213: -2829831209220912594
+    second: noun-harvest-7838588_21
+  - first:
+      213: 6285190794935577669
+    second: noun-harvest-7838588_22
+  - first:
+      213: -7640708456008270239
+    second: noun-harvest-7838588_23
+  - first:
+      213: 2673790537807899749
+    second: noun-harvest-7838588_24
+  - first:
+      213: -777924461735163431
+    second: noun-harvest-7838588_25
+  - first:
+      213: 8956315786654918937
+    second: noun-harvest-7838588_26
+  - first:
+      213: -6914898979243441965
+    second: noun-harvest-7838588_27
+  - first:
+      213: -5554831920226671517
+    second: noun-harvest-7838588_28
+  - first:
+      213: -4122969066315404859
+    second: noun-harvest-7838588_29
+  - first:
+      213: -2979358251728723723
+    second: noun-harvest-7838588_30
+  - first:
+      213: 2195220049677563353
+    second: noun-harvest-7838588_31
+  - first:
+      213: -278690835343166037
+    second: noun-harvest-7838588_32
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 900
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: noun-harvest-7838588_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 700
+        height: 700
+      alignment: 9
+      pivot: {x: 0.5, y: 0.48936734}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c80d41d0b41fee960800000000000000
+      internalID: 7633303723083878540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 716f5f189cfc41e4080d37c3a2eb5257
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":700.0,"y":700.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      noun-harvest-7838588_0: 7633303723083878540
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -26,11 +26,8 @@ public class Item : MonoBehaviour, IEntity
 
     public int ItemsInStack { get; set; }
 
-    public Item(ItemType type, int itemsInStack)
+    void Awake()
     {
-        Type = type;
-        Name = type.Name;
-        ItemsInStack = itemsInStack;
         Transform = transform;
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }

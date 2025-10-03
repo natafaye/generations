@@ -7,6 +7,7 @@ public enum StructureCategory
     Bed
 }
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Structure : MonoBehaviour, IEntity
 {
     [field: SerializeField]
@@ -22,6 +23,27 @@ public class Structure : MonoBehaviour, IEntity
     public Vector2Int MapPosition { get; set; }
     public Transform Transform { get; set; }
     public SpriteRenderer SpriteRenderer { get; set; }
+
+    public SpriteRenderer Overlay;
+    private JobWork _job;
+    public JobWork QueuedJob
+    {
+        get
+        {
+            return _job;
+        }
+        set
+        {
+            _job = value;
+            Overlay.sprite = _job.type.sprite;
+            _job.OnFinish += OnJobFinish;
+        }
+    }
+    public void OnJobFinish()
+    {
+        Overlay.sprite = null;
+        _job = null;
+    }
 
     private int _maxHealth = 10;
     private int _health;

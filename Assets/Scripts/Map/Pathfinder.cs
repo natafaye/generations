@@ -9,8 +9,8 @@ public static class Pathfinder
 		Vector2[] waypoints = new Vector2[0];
 		bool pathSuccess = false;
 
-		MapCell startCell = map.GetNearestPassableCell(map.WorldToMap(from));
-		MapCell targetCell = map.GetNearestPassableCell(map.WorldToMap(to));
+		MapCell startCell = map.FindNearestCell(map.WorldToMap(from), cell => cell.Passable);
+		MapCell targetCell = map.FindNearestCell(map.WorldToMap(to), cell => cell.Passable);
 
 		if (startCell == null || targetCell == null) return waypoints;
 

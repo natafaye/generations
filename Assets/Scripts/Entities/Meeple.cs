@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -18,10 +20,18 @@ public class Meeple : MonoBehaviour, IEntity
 
     // Map movement
     public MapManager Map;
-    public Transform MovementTarget;
-    private Vector2[] _path;
-    private static WaitForSeconds _waitFor25 = new(.25f);
-    int targetIndex;
+    private Vector2? _movementTarget;
+    private Queue<Vector2> _path; 
+    public Vector2? MovementTarget
+    {
+        get { return _movementTarget; }
+        set
+        {
+            if (_movementTarget.Equals(value)) return;
+            _movementTarget = value;
+            _path = null;
+        }
+    }
 
     public Vector2Int MapPosition
     {
@@ -42,7 +52,7 @@ public class Meeple : MonoBehaviour, IEntity
         set
         {
             _isSelected = value;
-            
+
             if (!SpriteRenderer) SpriteRenderer = GetComponent<SpriteRenderer>();
             if (_isSelected)
                 SpriteRenderer.material.SetInt("_ShowOutline", 1);
@@ -136,7 +146,6 @@ public class Meeple : MonoBehaviour, IEntity
     {
         Map = map;
         transform.position = cell.WorldPosition;
-        StartCoroutine(RefreshPath());
     }
 
     public void Tick()
@@ -148,32 +157,34 @@ public class Meeple : MonoBehaviour, IEntity
         if (Asleep) Sleep++;
         else Sleep--;
 
-        // if (CurrentJob != null)
-        // {
-        //     Debug.Log("Current Job Map Position: " + CurrentJob.target.MapPosition);
-        //     Debug.Log("Movement Target: " + MovementTarget.position);
-        //     Debug.Log("Meeple Map Position: " + MapPosition);
-        //     Debug.Log("Distance Between: " + DistanceBetween(MapPosition, CurrentJob.target.MapPosition));
-        // }
+        Work();
+    }
 
-        // Work
+    public void Work()
+    {
+        // If there is not a job, try to get one
         if (CurrentJob == null)
         {
-            CurrentJob = Map.JobManager.ReserveJob();
+            Debug.Log("Trying to get a job");
+            CurrentJob = Map.JobManager.ReserveJob(this);
             if (CurrentJob == null) return;
-            MovementTarget = CurrentJob.target.Transform;
+            MovementTarget = CurrentJob.target.MapPosition;
+            Debug.Log("Got a job at " + MovementTarget);
         }
+        // If the job has been fully worked, finish it
         else if (CurrentJob.Finished)
         {
+            Debug.Log("Finishing the job");
             Map.JobManager.FinishJob(CurrentJob);
             CurrentJob = null;
         }
+        // If the unfinished job is close enough, work it
         else if (DistanceBetween(MapPosition, CurrentJob.target.MapPosition) < 1.5)
         {
+            Debug.Log("Working the job with " + CurrentJob.workLeft + " left");
             MovementTarget = null;
             CurrentJob.Work();
         }
-
     }
 
     public double DistanceBetween(Vector2 a, Vector2 b)
@@ -181,63 +192,52 @@ public class Meeple : MonoBehaviour, IEntity
         return Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));
     }
 
-	IEnumerator RefreshPath() {
-        Debug.Log("Trying to refresh path");
+    void Update()
+    {
+        Move();
+    }
 
-        while (MovementTarget == null) yield return _waitFor25;
+    public void RemoveCurrentJob()
+    {
+        if (CurrentJob == null) return;
+        CurrentJob.worker = null;
+        CurrentJob = null;
+        MovementTarget = null;
+    }
 
-        Debug.Log("Refreshing path");
+    private void Move()
+    {
+        // If there's nowhere to move to, we're done here
+        if (MovementTarget == null || _path?.Count == 0) return;
 
-		Vector2 targetPositionOld = (Vector2)MovementTarget.position + Vector2.up; // ensure != to target.position initially
-			
-		while (true) {
-			if (targetPositionOld != (Vector2)MovementTarget.position) {
-				targetPositionOld = (Vector2)MovementTarget.position;
+        // Get a new path, if there isn't one (setting _path to null forces re-pathing)
+        _path ??= new Queue<Vector2>(Map.FindPath(transform.position, (Vector2)MovementTarget));
 
-				_path = Map.FindPath(transform.position, MovementTarget.position);
-				StopCoroutine(nameof(FollowPath));
-				StartCoroutine(nameof(FollowPath));
-			}
+        // Get the next point on the path
+        Vector2 currentWaypoint = _path.Peek();
+        Debug.Log("Next waypoint " + currentWaypoint);
 
-			yield return _waitFor25;
-		}
-	}
-		
-	IEnumerator FollowPath() {
-		if (_path.Length > 0)
-		{
-			targetIndex = 0;
-			Vector2 currentWaypoint = _path[0];
+        // Move towards the point
+        transform.position = Vector2.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
+        _animator.SetFloat("MoveX", currentWaypoint.x * Speed);
+        _animator.SetFloat("MoveY", currentWaypoint.y * Speed);
 
-			while (true)
-			{
-				if ((Vector2)transform.position == currentWaypoint)
-				{
-					targetIndex++;
-					if (targetIndex >= _path.Length) yield break;
-					currentWaypoint = _path[targetIndex];
-				}
+        // If we're at the path point, remove that point from the path
+        if ((Vector2)transform.position == currentWaypoint) _path.Dequeue();
+    }
 
-                transform.position = Vector2.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
-                _animator.SetFloat("MoveX", currentWaypoint.x * Speed);
-                _animator.SetFloat("MoveY", currentWaypoint.y * Speed);
-				yield return null;
-			}
-		}
-	}
+    // public void OnDrawGizmos() {
+    // 	if (_path != null) {
+    // 		for (int i = targetIndex; i < _path.Length; i ++) {
+    // 			Gizmos.color = Color.black;
 
-	public void OnDrawGizmos() {
-		if (_path != null) {
-			for (int i = targetIndex; i < _path.Length; i ++) {
-				Gizmos.color = Color.black;
-
-				if (i == targetIndex) {
-					Gizmos.DrawLine(transform.position, _path[i]);
-				}
-				else {
-					Gizmos.DrawLine(_path[i-1], _path[i]);
-				}
-			}
-		}
-	}
+    // 			if (i == targetIndex) {
+    // 				Gizmos.DrawLine(transform.position, _path[i]);
+    // 			}
+    // 			else {
+    // 				Gizmos.DrawLine(_path[i-1], _path[i]);
+    // 			}
+    // 		}
+    // 	}
+    // }
 }

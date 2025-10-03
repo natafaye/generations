@@ -3,10 +3,10 @@ using UnityEngine;
 public class MapCell : IHeapItem<MapCell> 
 {
 	// Data about that cell's tile (passable, walk cost, etc)
-	public bool Passable
-	{
-		get { return CellType.Passable; }
-	}
+	public bool Passable { get { return CellType.Passable; } }
+	// TODO: Add && Contents?.type != WallType
+
+	public bool Empty { get { return Contents == null; } }
 
 	// Position in the map by index
 	public Vector2Int MapPosition;

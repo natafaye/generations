@@ -3,16 +3,19 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// A delegate that returns true only if the given cell matches the requirements
+public delegate bool CellCheckerCallback(MapCell cellToCheck);
+
 public class MapManager : MonoBehaviour
 {
 	// Game data
 	public int Width;
-    public int Height;
+	public int Height;
 	public BiomeType Biome;
 	private MapCell[,] _cells;
-    private Vector2Int[] _movementsByDistance;
+	private Vector2Int[] _movementsByDistance;
 	public int Seed;
-	
+
 	// Entity Manager
 	public EntityManager EntityManager;
 
@@ -21,14 +24,14 @@ public class MapManager : MonoBehaviour
 
 	// Unity objects
 	private Grid _grid;
-    private Tilemap _tilemap;
+	private Tilemap _tilemap;
 
 	public FirmnessType[] FirmnessTypes;
 	public CellType WaterCellType;
-	
+
 	// Debugging
 	public bool DisplayGridGizmos;
-	
+
 	// Settings
 	private readonly float _cellSize = 1;
 	private readonly Vector2 _worldBottomLeft = Vector2.zero;
@@ -37,7 +40,7 @@ public class MapManager : MonoBehaviour
 	{
 		Width = width;
 		Height = height;
-		
+
 		Seed = Random.Range(0, 600);
 
 		_tilemap = GetComponentInChildren<Tilemap>();
@@ -59,7 +62,7 @@ public class MapManager : MonoBehaviour
 		return x >= 0 && x < Width && y >= 0 && y < Height;
 	}
 
-    public Vector3 MapToWorld(Vector2Int mapPosition)
+	public Vector3 MapToWorld(Vector2Int mapPosition)
 	{
 		return _grid.GetCellCenterWorld((Vector3Int)mapPosition);
 	}
@@ -79,7 +82,7 @@ public class MapManager : MonoBehaviour
 		return new Vector2Int(x, y);
 	}
 
-    public MapCell GetMapCell(Vector2Int cellIndex)
+	public MapCell GetMapCell(Vector2Int cellIndex)
 	{
 		if (!InBounds(cellIndex.x, cellIndex.y)) return null;
 		return _cells[cellIndex.x, cellIndex.y];
@@ -90,23 +93,24 @@ public class MapManager : MonoBehaviour
 		return Pathfinder.FindPath(this, from, to);
 	}
 
-    public MapCell GetNearestPassableCell(Vector2Int start)
+	public MapCell FindNearestCell(Vector2Int start, CellCheckerCallback checkCell)
 	{
 		var startCell = GetMapCell(start);
 
-		// If this cell is passable, that's the nearest one
-		if (startCell.Passable) return startCell;
+		// If this cell matches the requirements, that's the nearest one
+		if (checkCell(startCell)) return startCell;
 
 		// Loop over possible movements sorted by distance 
-		// and find the first passable one (and thus the nearest)
+		// and find the first one that matches the requirements 
+		// (and thus the nearest)
 		foreach (Vector2Int coordinate in _movementsByDistance)
 		{
 			var cell = GetMapCell(start + coordinate);
-			if (cell != null && cell.Passable)
+			if (cell != null && checkCell(cell))
 				return cell;
 		}
 
-		// If there are no passable cells on the map return null
+		// If there are no matching cells on the map return null
 		return null;
 	}
 

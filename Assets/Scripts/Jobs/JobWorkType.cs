@@ -8,4 +8,5 @@ public class JobWorkType : ScriptableObject
     public int workAmount;
     public ItemType productType;
     public int productAmount;
+    public Sprite sprite;
 }

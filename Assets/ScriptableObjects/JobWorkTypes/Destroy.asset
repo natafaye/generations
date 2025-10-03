@@ -16,3 +16,4 @@ MonoBehaviour:
   workAmount: 5
   productType: {fileID: 0}
   productAmount: 0
+  sprite: {fileID: 6778096562878039736, guid: 9523cc1299e8d0f4abcd5c21f9aba5bf, type: 3}

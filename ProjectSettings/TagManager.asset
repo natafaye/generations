@@ -50,6 +50,9 @@ TagManager:
   - name: Structures
     uniqueID: 2910402551
     locked: 0
+  - name: Structure Overlays
+    uniqueID: 396446455
+    locked: 0
   - name: Items
     uniqueID: 1717586541
     locked: 0

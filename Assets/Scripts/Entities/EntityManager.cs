@@ -35,7 +35,8 @@ public class EntityManager : MonoBehaviour
 
         for (int i = 0; i < Meeples.Count; i++)
         {
-            Meeples[i].Spawn(_map, _map.GetNearestPassableCell(new Vector2Int(2, 2 + i)));
+            var nearestPassableCell = _map.FindNearestCell(new Vector2Int(2, 2 + i), cell => cell.Passable);
+            Meeples[i].Spawn(_map, nearestPassableCell);
         }
     }
 

@@ -175,6 +175,7 @@ MonoBehaviour:
   ItemsContainer: {fileID: 550544880}
   StructuresContainer: {fileID: 849503614}
   StructurePrefab: {fileID: 3145367136463346711, guid: 8953fd56009d450468641aa1e75d18b1, type: 3}
+  PlantPrefab: {fileID: 3464436662561180382, guid: 615d55f7e82ce924db8e43233fa18087, type: 3}
   ItemPrefab: {fileID: 2751608899941441681, guid: d1d3df14b04da2246be44b3dbc8b06ac, type: 3}
   MeeplePrefab: {fileID: 1458601539516979769, guid: 407392ddf48a6e149a0e1e3d95a20bab, type: 3}
   InputManager: {fileID: 793677428}
@@ -1349,6 +1350,7 @@ MonoBehaviour:
   Biome: {fileID: 11400000, guid: 0d75153cf7755204ba7cd5e86699ce1e, type: 2}
   Seed: 0
   EntityManager: {fileID: 76701412}
+  JobTypesData: {fileID: 11400000, guid: 796e5e961cb68364784c9fef84fa1ed7, type: 2}
   FirmnessTypes:
   - {fileID: 11400000, guid: 7531a500cf4bd9e4d9b753ba909aacd9, type: 2}
   - {fileID: 11400000, guid: cbf3295ab3c28744a9162d4b3f61fb66, type: 2}

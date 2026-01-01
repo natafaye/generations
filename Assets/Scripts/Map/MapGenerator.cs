@@ -73,6 +73,11 @@ public class MapGenerator
                 {
                     var structure = entityManager.Create(structureType);
                     mapCell.MoveToCell(structure);
+                    if (structureType is PlantType type)
+                    {
+                        int maxAge = type.ageToStartHarvestCycle + (int)Math.Round(type.timeToFullHarvest * 1.5);
+                        ((Plant)structure).Age = UnityEngine.Random.Range(0, maxAge);
+                    }
                 }
 
                 tilemap.SetTile(new Vector3Int(x, y, 0), cellType.Tile);

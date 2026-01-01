@@ -21,6 +21,7 @@ public class MapManager : MonoBehaviour
 
 	// Job manager
 	public JobManager JobManager;
+	public JobTypesData JobTypesData;
 
 	// Unity objects
 	private Grid _grid;
@@ -48,7 +49,7 @@ public class MapManager : MonoBehaviour
 		_movementsByDistance = MovementsByDistanceGenerator.Generate(Width, Height);
 		_cells = MapGenerator.Generate(Seed, Width, Height, Biome, _tilemap, EntityManager, FirmnessTypes, WaterCellType);
 
-		JobManager = new(this);
+		JobManager = new(this, JobTypesData);
 	}
 
 	public void Spawn(IEntity entity, Vector2Int mapPosition)

@@ -9,41 +9,11 @@ using UnityEngine;
 public class Meeple : MonoBehaviour, IEntity
 {
     private Animator _animator;
-
-    private readonly Color _noTint = new(0, 0, 0, 0);
-    public Color DistressTint = new(1, 0, 0, 0.5f);
-
-    [field: SerializeField]
-    public string Name { get; set; }
-    [field: SerializeField]
-    public IEntityType Type { get; set; }
-
-    // Map movement
-    public MapManager Map;
-    private Vector2? _movementTarget;
-    private Queue<Vector2> _path; 
-    public Vector2? MovementTarget
-    {
-        get { return _movementTarget; }
-        set
-        {
-            if (_movementTarget.Equals(value)) return;
-            _movementTarget = value;
-            _path = null;
-        }
-    }
-
-    public Vector2Int MapPosition
-    {
-        get { return Map.WorldToMap(Transform.position); }
-        set { Transform.position = Map.MapToWorld(value); }
-    }
-
     public Transform Transform { get; set; }
     public SpriteRenderer SpriteRenderer { get; set; }
-
-    // Job
-    public JobWork CurrentJob;
+    
+    private readonly Color _noTint = new(0, 0, 0, 0);
+    public Color DistressTint = new(1, 0, 0, 0.5f);
 
     private bool _isSelected = false;
     public bool IsSelected
@@ -61,18 +31,12 @@ public class Meeple : MonoBehaviour, IEntity
         }
     }
 
-    private float _baseSpeed = 4;
-    public float Speed
-    {
-        get
-        {
-            var speed = _baseSpeed;
-            if (Asleep) speed = 0;
-            else if (Sleep <= 2) speed *= 0.5f;
-            if (Food <= 0) speed *= 0.5f;
-            return speed;
-        }
-    }
+    #region Meeple Data
+
+    [field: SerializeField]
+    public string Name { get; set; }
+    [field: SerializeField]
+    public IEntityType Type { get; set; }
 
     private bool _inDistress;
     public bool InDistress
@@ -134,12 +98,19 @@ public class Meeple : MonoBehaviour, IEntity
         }
     }
 
+    #endregion
+
     void Start()
     {
         Transform = transform;
         SpriteRenderer = GetComponent<SpriteRenderer>();
         _animator = GetComponent<Animator>();
         MovementTarget = null;
+    }
+
+    void Update()
+    {
+        Move();
     }
 
     public void Spawn(MapManager map, MapCell cell)
@@ -159,6 +130,10 @@ public class Meeple : MonoBehaviour, IEntity
 
         Work();
     }
+
+    #region Jobs
+
+    public JobWork CurrentJob;
 
     public void Work()
     {
@@ -187,22 +162,70 @@ public class Meeple : MonoBehaviour, IEntity
         }
     }
 
-    public double DistanceBetween(Vector2 a, Vector2 b)
-    {
-        return Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));
-    }
-
-    void Update()
-    {
-        Move();
-    }
-
     public void RemoveCurrentJob()
     {
         if (CurrentJob == null) return;
         CurrentJob.worker = null;
         CurrentJob = null;
         MovementTarget = null;
+    }
+
+    public JobType[] GetAvailableJobs()
+    {
+        return new JobType[] {};
+    }
+
+    public int GetJobWorkAmount(JobType jobType)
+    {
+        return 0;
+    }
+
+    public JobResult FinishJob(JobType jobType)
+    {
+        return new JobResult();
+    }
+
+    #endregion
+
+    #region Movement
+
+    // Map movement
+    public MapManager Map;
+    private Vector2? _movementTarget;
+    private Queue<Vector2> _path; 
+    public Vector2? MovementTarget
+    {
+        get { return _movementTarget; }
+        set
+        {
+            if (_movementTarget.Equals(value)) return;
+            _movementTarget = value;
+            _path = null;
+        }
+    }
+
+    public Vector2Int MapPosition
+    {
+        get { return Map.WorldToMap(Transform.position); }
+        set { Transform.position = Map.MapToWorld(value); }
+    }
+
+    private float _baseSpeed = 4;
+    public float Speed
+    {
+        get
+        {
+            var speed = _baseSpeed;
+            if (Asleep) speed = 0;
+            else if (Sleep <= 2) speed *= 0.5f;
+            if (Food <= 0) speed *= 0.5f;
+            return speed;
+        }
+    }
+
+    public double DistanceBetween(Vector2 a, Vector2 b)
+    {
+        return Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));
     }
 
     private void Move()
@@ -240,4 +263,6 @@ public class Meeple : MonoBehaviour, IEntity
     // 		}
     // 	}
     // }
+
+    #endregion
 }

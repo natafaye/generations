@@ -9,4 +9,8 @@ public interface IEntity
     public Vector2Int MapPosition { get; set; }
     public Transform Transform { get; set; }
     public SpriteRenderer SpriteRenderer { get; set; }
+
+    public JobType[] GetAvailableJobs();
+    public int GetJobWorkAmount(JobType jobType);
+    public JobResult FinishJob(JobType jobType);
 }

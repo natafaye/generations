@@ -31,4 +31,19 @@ public class Item : MonoBehaviour, IEntity
         Transform = transform;
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+    public JobType[] GetAvailableJobs()
+    {
+        return new JobType[] {};
+    }
+
+    public int GetJobWorkAmount(JobType jobType)
+    {
+        return 0;
+    }
+
+    public JobResult FinishJob(JobType jobType)
+    {
+        return new JobResult();
+    }
 }

@@ -25,5 +25,5 @@ MonoBehaviour:
   MoistureType: {fileID: 11400000, guid: eb27fbb3c6b0bd04b82bbbfc2f36f0b9, type: 2}
   StructureTypes:
   - {fileID: 11400000, guid: ccca8c878e05c01448c6e6f2af8813bc, type: 2}
-  - {fileID: 11400000, guid: 802bbdd01d987bd4db2c3e2936a9dc48, type: 2}
+  - {fileID: 11400000, guid: 82323174e1982ce4ba4f8d0e3bab6ec9, type: 2}
   - {fileID: 11400000, guid: 51a0e7a750c71c34f815bef412ce1a06, type: 2}

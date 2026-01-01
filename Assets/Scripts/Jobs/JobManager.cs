@@ -1,62 +1,37 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class JobWork
-{
-    public JobWorkType type;
-    public IEntity target;
-    public int workLeft;
-    public JobManager manager;
-    public Meeple worker;
-
-    public event Action OnFinish;
-
-    public bool Finished { get { return workLeft == 0; } }
-
-    public JobWork(JobWorkType jobType, IEntity jobTarget, JobManager jobManager)
-    {
-        type = jobType;
-        target = jobTarget;
-        workLeft = jobType.workAmount;
-        manager = jobManager;
-    }
-
-    public void Work()
-    {
-        workLeft--;
-        if (Finished) OnFinish?.Invoke();
-    }
-}
 
 public class JobManager
 {
     public List<JobWork> Jobs;
     public List<JobWork> ReservedJobs;
     public MapManager Map;
+    public JobTypesData JobTypesData;
 
-    public JobManager(MapManager map)
+    public JobManager(MapManager map, JobTypesData jobTypesData)
     {
         Jobs = new();
         ReservedJobs = new();
         Map = map;
+        JobTypesData = jobTypesData;
     }
 
-    public void AddJob(JobWorkType jobType, Structure structure)
+    public void AddJob(JobType jobType, Structure structure)
     {
-        JobWork newJob = new(jobType, structure, this);
+        JobWork newJob = new(
+            jobType, 
+            JobTypesData.GetSprite(jobType), 
+            structure, 
+            this
+        );
         Jobs.Add(newJob);
 
         // If this replaces another job, get rid of that job
-        if (structure.QueuedJob != null)
-        {
-            // Remove from job queue
-            RemoveJob(structure.QueuedJob);
-        }
+        if (structure.QueuedJob != null) RemoveJob(structure.QueuedJob);
 
         // Set this as the structure's queued job
         structure.QueuedJob = newJob;
-        Debug.Log("Added " + jobType.Name);
+        Debug.Log("Added " + jobType);
     }
 
     public void RemoveJob(JobWork jobToRemove)
@@ -82,19 +57,20 @@ public class JobManager
         Jobs.RemoveAt(0);
         ReservedJobs.Add(reserved);
         reserved.worker = meeple;
-        Debug.Log("Reserved " + reserved.type.Name);
+        Debug.Log("Reserved " + reserved.type);
         return reserved;
     }
 
     public void FinishJob(JobWork finishedJob)
     {
-        Debug.Log("Finishing " + finishedJob.type.Name);
+        Debug.Log("Finishing " + finishedJob.type);
         ReservedJobs.Remove(finishedJob);
 
         // Create any produced items
-        if (finishedJob.type.productAmount == 0) return;
-        Item product = (Item)Map.EntityManager.Create(finishedJob.type.productType);
-        product.ItemsInStack = finishedJob.type.productAmount;
+        JobResult result = finishedJob.target.FinishJob(finishedJob.type);
+        if (result.amount == 0) return;
+        Item product = (Item)Map.EntityManager.Create(result.type);
+        product.ItemsInStack = result.amount;
         var cell = Map.FindNearestCell(finishedJob.target.MapPosition, cell => cell.Empty);
         cell.MoveToCell(product);
     }

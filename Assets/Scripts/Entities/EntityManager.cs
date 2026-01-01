@@ -16,6 +16,7 @@ public class EntityManager : MonoBehaviour
     public Transform ItemsContainer;
     public Transform StructuresContainer;
     public Structure StructurePrefab;
+    public Plant PlantPrefab;
     public Item ItemPrefab;
     public Meeple MeeplePrefab;
 
@@ -45,7 +46,10 @@ public class EntityManager : MonoBehaviour
         IEntity entity;
         if (entityType is StructureType)
         {
-            entity = Instantiate(StructurePrefab, StructuresContainer);
+            if (entityType is PlantType) 
+                entity = Instantiate(PlantPrefab, StructuresContainer);
+            else 
+                entity = Instantiate(StructurePrefab, StructuresContainer);
             Structures.Add((Structure)entity);
         }
         else if (entityType is ItemType)
@@ -102,11 +106,16 @@ public class EntityManager : MonoBehaviour
             Debug.Log("Structure!");
             Label label = new();
             label.text = structure.Name;
-            _selectedDisplay.Add(label);
-            foreach (JobWorkType job in structure.Type.availableJobs)
+            if(structure is Plant plant)
             {
+                label.text += " " + plant.Age;
+            }
+            _selectedDisplay.Add(label);
+            foreach (JobType job in structure.GetAvailableJobs())
+            {
+                Debug.Log("Adding job button!");
                 Button jobButton = new();
-                jobButton.text = job.Name;
+                jobButton.text = job.ToString();
                 jobButton.clicked += () => _map.JobManager.AddJob(job, structure);
                 _selectedDisplay.Add(jobButton);
             }
@@ -122,5 +131,6 @@ public class EntityManager : MonoBehaviour
     public void Tick()
     {
         foreach (var meeple in Meeples) meeple.Tick();
+        foreach (var structure in Structures) structure.Tick();
     }
 }

@@ -1,11 +1,5 @@
+using System;
 using UnityEngine;
-
-public enum StructureCategory
-{
-    Plant,
-    Wall,
-    Bed
-}
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class Structure : MonoBehaviour, IEntity
@@ -17,6 +11,13 @@ public class Structure : MonoBehaviour, IEntity
     public StructureType Type { get; set; }
     // Handle type inheritance of IEntityType to StructureType
     IEntityType IEntity.Type { get => Type; set => Type = (StructureType)value; }
+
+    private int _health;
+    public int Health
+    {
+        get { return _health; }
+        set { _health = value; }
+    }
     
     public bool IsSelected { get; set; }
 
@@ -24,42 +25,46 @@ public class Structure : MonoBehaviour, IEntity
     public Transform Transform { get; set; }
     public SpriteRenderer SpriteRenderer { get; set; }
 
+    #region Jobs
+
     public SpriteRenderer Overlay;
-    private JobWork _job;
+
+    private JobWork _queuedJob;
     public JobWork QueuedJob
     {
         get
         {
-            return _job;
+            return _queuedJob;
         }
         set
         {
-            _job = value;
-            Overlay.sprite = _job.type.sprite;
-            _job.OnFinish += OnJobFinish;
+            _queuedJob = value;
+            Overlay.sprite = (_queuedJob != null) ? _queuedJob.sprite : null;
+            //_job.OnFinish += OnJobFinish;
         }
-    }
-    public void OnJobFinish()
-    {
-        Overlay.sprite = null;
-        _job = null;
     }
 
-    private int _maxHealth = 10;
-    private int _health;
-    public int Health
-    {
-        get { return _health; }
-        set
-        {
-            _health = value;
-        }
+    public virtual JobType[] GetAvailableJobs() { return Array.Empty<JobType>(); }
+
+    public virtual int GetJobWorkAmount(JobType jobType) { return 0; }
+
+    public virtual JobResult FinishJob(JobType jobType) {
+        QueuedJob = null;
+        return new JobResult(); 
     }
+
+    #endregion
 
     void Awake()
     {
-        Health = _maxHealth;
         Transform = transform;
         SpriteRenderer = GetComponent<SpriteRenderer>();
     }
+
+    void Start()
+    {
+        Health = Type.maxHealth;
+    }
+
+    public virtual void Tick() { }
 }

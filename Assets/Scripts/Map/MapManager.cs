@@ -16,13 +16,6 @@ public class MapManager : MonoBehaviour
 	private Vector2Int[] _movementsByDistance;
 	public int Seed;
 
-	// Entity Manager
-	public EntityManager EntityManager;
-
-	// Job manager
-	public JobManager JobManager;
-	public JobTypesData JobTypesData;
-
 	// Unity objects
 	private Grid _grid;
 	private Tilemap _tilemap;
@@ -47,15 +40,28 @@ public class MapManager : MonoBehaviour
 		_tilemap = GetComponentInChildren<Tilemap>();
 		_grid = GetComponentInChildren<Grid>();
 		_movementsByDistance = MovementsByDistanceGenerator.Generate(Width, Height);
-		_cells = MapGenerator.Generate(Seed, Width, Height, Biome, _tilemap, EntityManager, FirmnessTypes, WaterCellType);
 
-		JobManager = new(this, JobTypesData);
+		_cells = new MapCell[width, height];
+		MapGenerator.Generate(_cells, Seed, Width, Height, Biome, _tilemap, FirmnessTypes, WaterCellType);
 	}
 
-	public void Spawn(IEntity entity, Vector2Int mapPosition)
+	public void MoveEntity(Entity entity, Vector2Int location)
 	{
-		entity.MapPosition = mapPosition;
-		entity.Transform.position = new(mapPosition.x + 0.5f, mapPosition.y + 0.5f, 0);
+		// Remove it from where it was before (if it was)
+		RemoveEntity(entity);
+		// Find the closest empty cell to where it should be moved
+		var cell = FindNearestCell(location, cell => cell.Empty);
+		// Move it to that cell
+        entity.MapPosition = cell.MapPosition;
+		entity.Transform.position = cell.WorldPosition;
+		cell.Contents = entity;
+	}
+
+	public void RemoveEntity(Entity entity)
+	{
+		MapCell cell = GetMapCell(entity.MapPosition);
+		if(cell != null && cell.Contents == entity)
+			cell.Contents = null;
 	}
 
 	bool InBounds(int x, int y)
@@ -85,7 +91,7 @@ public class MapManager : MonoBehaviour
 
 	public MapCell GetMapCell(Vector2Int cellIndex)
 	{
-		if (!InBounds(cellIndex.x, cellIndex.y)) return null;
+		if (cellIndex == null || !InBounds(cellIndex.x, cellIndex.y)) return null;
 		return _cells[cellIndex.x, cellIndex.y];
 	}
 

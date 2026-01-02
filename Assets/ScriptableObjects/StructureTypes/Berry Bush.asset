@@ -12,12 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a28695f9b22855449064a1cc68d9acc, type: 3}
   m_Name: Berry Bush
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Berry Bush
-  <Sprite>k__BackingField: {fileID: -5062486230716756072, guid: d02b24ac01e6b614d8142ce7041c25cf, type: 3}
-  category: 0
-  availableJobs:
-  - {fileID: 11400000, guid: e7f85aa9c89e5dd4883838dfcaf5a2b5, type: 2}
-  - {fileID: 11400000, guid: 5621652022e42d4458dde42a6be75458, type: 2}
+  Name: Berry Bush
+  Sprite: {fileID: -5062486230716756072, guid: d02b24ac01e6b614d8142ce7041c25cf, type: 3}
+  MaxHealth: 100
+  destroyProductType: {fileID: 0}
+  destroyProductAmount: 0
   harvestableSprite: {fileID: 7223950226953391895, guid: d02b24ac01e6b614d8142ce7041c25cf, type: 3}
-  harvestableAge: 5
-  fullGrownAge: 10
+  ageToStartHarvestCycle: 50
+  timeToMinHarvest: 30
+  timeToFullHarvest: 50
+  destroyedByHarvest: 0
+  productType: {fileID: 11400000, guid: 2232017a861f54a4ebaaca6ee0b3e821, type: 2}
+  maxProductAmount: 10
+  timeToCut: 5
+  timeToHarvest: 5

@@ -138,8 +138,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d980a44cfbf49e44d89bcbc5de71be5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 0
-  <Type>k__BackingField: {fileID: 0}
+  Name: 
+  Type: {fileID: 0}
+  Health: 0
+  Transform: {fileID: 5761412013634656172}
+  SpriteRenderer: {fileID: 7232199567461201523}
+  GameObject: {fileID: 892468469696648501}
   Overlay: {fileID: 6986213801058848620}
 --- !u!1 &6254221871438365147
 GameObject:

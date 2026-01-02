@@ -138,8 +138,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7e962045d8c8a647b8d69b908d5100d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <Type>k__BackingField: {fileID: 0}
+  Name: 
+  Type: {fileID: 0}
+  Health: 0
+  Transform: {fileID: 7593338689348008467}
+  SpriteRenderer: {fileID: 6283397789324191950}
+  GameObject: {fileID: 8107682817730068774}
   Overlay: {fileID: 1302718451463647477}
   Age: 0
   NextMinHarvestAge: 0

@@ -1,29 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JobManager
+public class JobManager: MonoBehaviour
 {
-    public List<JobWork> Jobs;
-    public List<JobWork> ReservedJobs;
-    public MapManager Map;
+    public static JobManager Instance { get; private set; }
+
+    public List<JobWork> Jobs = new();
+    public List<JobWork> ReservedJobs = new();
     public JobTypesData JobTypesData;
 
-    public JobManager(MapManager map, JobTypesData jobTypesData)
+    void Awake()
     {
-        Jobs = new();
-        ReservedJobs = new();
-        Map = map;
-        JobTypesData = jobTypesData;
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
     }
 
     public void AddJob(JobType jobType, Structure structure)
     {
-        JobWork newJob = new(
-            jobType, 
-            JobTypesData.GetSprite(jobType), 
-            structure, 
-            this
-        );
+        JobWork newJob = new(jobType, JobTypesData.GetSprite(jobType), structure);
         Jobs.Add(newJob);
 
         // If this replaces another job, get rid of that job
@@ -51,7 +49,7 @@ public class JobManager
 
     public JobWork ReserveJob(Meeple meeple)
     {
-        Debug.Log("Trying to reserve job");
+        //Debug.Log("Trying to reserve job");
         if (Jobs.Count == 0) return null;
         var reserved = Jobs[0];
         Jobs.RemoveAt(0);
@@ -61,17 +59,20 @@ public class JobManager
         return reserved;
     }
 
+    public void WorkJob(JobWork job)
+    {
+        job.workLeft--;
+    }
+
     public void FinishJob(JobWork finishedJob)
     {
-        Debug.Log("Finishing " + finishedJob.type);
+        //Debug.Log("Finishing " + finishedJob.type);
         ReservedJobs.Remove(finishedJob);
 
         // Create any produced items
         JobResult result = finishedJob.target.FinishJob(finishedJob.type);
         if (result.amount == 0) return;
-        Item product = (Item)Map.EntityManager.Create(result.type);
+        Item product = (Item)GameManager.Instance.CreateEntity(result.type, finishedJob.target.MapPosition);
         product.ItemsInStack = result.amount;
-        var cell = Map.FindNearestCell(finishedJob.target.MapPosition, cell => cell.Empty);
-        cell.MoveToCell(product);
     }
 }

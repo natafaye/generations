@@ -15,7 +15,21 @@ public class Plant : Structure
     // Is this plant harvestable
     public bool Harvestable { get { return Age > NextMinHarvestAge; } }
 
-    #region Plant-Specific Methods
+    public override void Start()
+    {
+        base.Start();
+        NextMinHarvestAge = PlantType.ageToStartHarvestCycle + PlantType.timeToMinHarvest;
+        NextFullHarvestAge = PlantType.ageToStartHarvestCycle + PlantType.timeToFullHarvest;
+    }
+    
+    public override void Tick()
+    {
+        base.Tick();
+        // TODO: check if in good condition to grow
+        Grow();
+    }
+
+    #region Grow & Harvest
 
     void Grow()
     {
@@ -39,32 +53,14 @@ public class Plant : Structure
         NextMinHarvestAge = Age + PlantType.timeToMinHarvest;
         NextFullHarvestAge = Age + PlantType.timeToFullHarvest;
         SpriteRenderer.sprite = PlantType.Sprite;
-        if(PlantType.destroyedByHarvest) Destroy();
+        if(PlantType.destroyedByHarvest) DestroyEntity();
 
         return new JobResult() { type = PlantType.productType, amount = amount };
     }
 
-    JobResult Destroy()
-    {
-        return new JobResult() { type = PlantType.destroyProductType, amount = PlantType.destroyProductAmount };
-    }
-
     #endregion
 
-    #region Structure Methods
-
-    void Start()
-    {
-        NextMinHarvestAge = PlantType.ageToStartHarvestCycle + PlantType.timeToMinHarvest;
-        NextFullHarvestAge = PlantType.ageToStartHarvestCycle + PlantType.timeToFullHarvest;
-    }
-    
-    public override void Tick()
-    {
-        base.Tick();
-        // TODO: check if in good condition to grow
-        Grow();
-    }
+    #region Jobs
 
     public override JobType[] GetAvailableJobs()
     {
@@ -98,7 +94,7 @@ public class Plant : Structure
     public override JobResult FinishJob(JobType type)
     {
         base.FinishJob(type);
-        if(type == JobType.Destroy) return Destroy();
+        if(type == JobType.Cut) return DestroyEntity();
         else if(type == JobType.Harvest) return Harvest();
         else return new JobResult();
     }

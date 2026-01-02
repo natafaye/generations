@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a1cc5c121e93954f8628a3acfef3f0f, type: 3}
   m_Name: Berries
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: 
-  <Sprite>k__BackingField: {fileID: -755600408, guid: d02b24ac01e6b614d8142ce7041c25cf, type: 3}
-  category: 0
-  stackSize: 50
-  maxHealth: 20
+  Name: Berries
+  Sprite: {fileID: -755600408, guid: d02b24ac01e6b614d8142ce7041c25cf, type: 3}
+  MaxHealth: 100
+  StackSize: 50

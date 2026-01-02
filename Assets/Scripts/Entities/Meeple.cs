@@ -1,29 +1,22 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
-public class Meeple : MonoBehaviour, IEntity
+public class Meeple : Entity
 {
-    private Animator _animator;
-    public Transform Transform { get; set; }
-    public SpriteRenderer SpriteRenderer { get; set; }
+    public Animator Animator;
     
     private readonly Color _noTint = new(0, 0, 0, 0);
     public Color DistressTint = new(1, 0, 0, 0.5f);
 
     private bool _isSelected = false;
-    public bool IsSelected
+    public override bool IsSelected
     {
         get { return _isSelected; }
         set
         {
             _isSelected = value;
-
-            if (!SpriteRenderer) SpriteRenderer = GetComponent<SpriteRenderer>();
             if (_isSelected)
                 SpriteRenderer.material.SetInt("_ShowOutline", 1);
             else
@@ -31,12 +24,11 @@ public class Meeple : MonoBehaviour, IEntity
         }
     }
 
-    #region Meeple Data
-
-    [field: SerializeField]
-    public string Name { get; set; }
-    [field: SerializeField]
-    public IEntityType Type { get; set; }
+    public override Vector2Int MapPosition
+    {
+        get { return GameManager.Instance.MapManager.WorldToMap(Transform.position); }
+        set { Transform.position = GameManager.Instance.MapManager.MapToWorld(value); }
+    }
 
     private bool _inDistress;
     public bool InDistress
@@ -98,13 +90,9 @@ public class Meeple : MonoBehaviour, IEntity
         }
     }
 
-    #endregion
 
-    void Start()
+    void Awake()
     {
-        Transform = transform;
-        SpriteRenderer = GetComponent<SpriteRenderer>();
-        _animator = GetComponent<Animator>();
         MovementTarget = null;
     }
 
@@ -113,22 +101,17 @@ public class Meeple : MonoBehaviour, IEntity
         Move();
     }
 
-    public void Spawn(MapManager map, MapCell cell)
+    public override void Tick()
     {
-        Map = map;
-        transform.position = cell.WorldPosition;
-    }
-
-    public void Tick()
-    {
-        // Food
+        base.Tick();
+        
+        Debug.Log("Meeple Tick");
         Food--;
 
-        // Sleep
         if (Asleep) Sleep++;
         else Sleep--;
 
-        Work();
+        if(!Asleep) Work();
     }
 
     #region Jobs
@@ -141,7 +124,7 @@ public class Meeple : MonoBehaviour, IEntity
         if (CurrentJob == null)
         {
             Debug.Log("Trying to get a job");
-            CurrentJob = Map.JobManager.ReserveJob(this);
+            CurrentJob = JobManager.Instance.ReserveJob(this);
             if (CurrentJob == null) return;
             MovementTarget = CurrentJob.target.MapPosition;
             Debug.Log("Got a job at " + MovementTarget);
@@ -150,7 +133,7 @@ public class Meeple : MonoBehaviour, IEntity
         else if (CurrentJob.Finished)
         {
             Debug.Log("Finishing the job");
-            Map.JobManager.FinishJob(CurrentJob);
+            JobManager.Instance.FinishJob(CurrentJob);
             CurrentJob = null;
         }
         // If the unfinished job is close enough, work it
@@ -158,7 +141,7 @@ public class Meeple : MonoBehaviour, IEntity
         {
             Debug.Log("Working the job with " + CurrentJob.workLeft + " left");
             MovementTarget = null;
-            CurrentJob.Work();
+            JobManager.Instance.WorkJob(CurrentJob);
         }
     }
 
@@ -170,27 +153,11 @@ public class Meeple : MonoBehaviour, IEntity
         MovementTarget = null;
     }
 
-    public JobType[] GetAvailableJobs()
-    {
-        return new JobType[] {};
-    }
-
-    public int GetJobWorkAmount(JobType jobType)
-    {
-        return 0;
-    }
-
-    public JobResult FinishJob(JobType jobType)
-    {
-        return new JobResult();
-    }
-
     #endregion
 
     #region Movement
 
     // Map movement
-    public MapManager Map;
     private Vector2? _movementTarget;
     private Queue<Vector2> _path; 
     public Vector2? MovementTarget
@@ -202,12 +169,6 @@ public class Meeple : MonoBehaviour, IEntity
             _movementTarget = value;
             _path = null;
         }
-    }
-
-    public Vector2Int MapPosition
-    {
-        get { return Map.WorldToMap(Transform.position); }
-        set { Transform.position = Map.MapToWorld(value); }
     }
 
     private float _baseSpeed = 4;
@@ -234,7 +195,7 @@ public class Meeple : MonoBehaviour, IEntity
         if (MovementTarget == null || _path?.Count == 0) return;
 
         // Get a new path, if there isn't one (setting _path to null forces re-pathing)
-        _path ??= new Queue<Vector2>(Map.FindPath(transform.position, (Vector2)MovementTarget));
+        _path ??= new Queue<Vector2>(GameManager.Instance.MapManager.FindPath(transform.position, (Vector2)MovementTarget));
 
         // Get the next point on the path
         Vector2 currentWaypoint = _path.Peek();
@@ -242,8 +203,8 @@ public class Meeple : MonoBehaviour, IEntity
 
         // Move towards the point
         transform.position = Vector2.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);
-        _animator.SetFloat("MoveX", currentWaypoint.x * Speed);
-        _animator.SetFloat("MoveY", currentWaypoint.y * Speed);
+        Animator.SetFloat("MoveX", currentWaypoint.x * Speed);
+        Animator.SetFloat("MoveY", currentWaypoint.y * Speed);
 
         // If we're at the path point, remove that point from the path
         if ((Vector2)transform.position == currentWaypoint) _path.Dequeue();

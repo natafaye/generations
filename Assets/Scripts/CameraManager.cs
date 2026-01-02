@@ -15,9 +15,9 @@ public class CameraManager : MonoBehaviour
     private Vector3 _panDirection;
     
     // Pan with mouse near screen edge
-    public float EdgeTolerance = 0.05f;
-    private Vector3 _mousePanDirection;
-    public bool UseScreenEdge = true;
+    // public float EdgeTolerance = 0.05f;
+    // private Vector3 _mousePanDirection;
+    // public bool UseScreenEdge = true;
 
     // Zoom
     public float StepSize = -1;
@@ -36,7 +36,7 @@ public class CameraManager : MonoBehaviour
         _camera = GetComponentInChildren<Camera>();
 
         InputManager.OnNavigateInput += OnNavigate;
-        InputManager.OnPointInput += OnPoint;
+        //InputManager.OnPointInput += OnPoint;
         InputManager.OnScrollWheelInput += OnScrollWheel;
     }
 
@@ -45,7 +45,7 @@ public class CameraManager : MonoBehaviour
         // ---- PAN ----
         // Only use screen edge panning if there is no keyboard panning currently happening
         var moveDirection = _panDirection;
-        if (_panDirection.sqrMagnitude < 0.1f && UseScreenEdge) moveDirection = _mousePanDirection;
+        //if (_panDirection.sqrMagnitude < 0.1f && UseScreenEdge) moveDirection = _mousePanDirection;
         // Scale the pan speed by the zoom size, so you pan faster when more zoomed out
         Vector3 targetPosition = transform.position + (_zoomSize * PanSpeed * Time.deltaTime * moveDirection);
         // Don't allow panning past the edges of the map
@@ -58,6 +58,8 @@ public class CameraManager : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * PanDampening);
 
         // ---- ZOOM ----
+        // Prevent repeating errors when other code errors
+        if(!_camera) return;
         _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, _zoomSize, Time.deltaTime * ZoomDampening);
     }
 
@@ -66,24 +68,24 @@ public class CameraManager : MonoBehaviour
         _panDirection = value.Get<Vector2>().normalized;
     }
 
-    private void OnPoint()
-    {
-        // If the mouse has moved, check if it's near an edge for screen edge panning
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Vector3 moveDirection = Vector3.zero;
+    // private void OnPoint()
+    // {
+    //     // If the mouse has moved, check if it's near an edge for screen edge panning
+    //     Vector2 mousePosition = Mouse.current.position.ReadValue();
+    //     Vector3 moveDirection = Vector3.zero;
 
-        if (mousePosition.x < EdgeTolerance * Screen.width)
-            moveDirection += Vector3.left;
-        else if (mousePosition.x > (1f - EdgeTolerance) * Screen.width)
-            moveDirection += Vector3.right;
+    //     if (mousePosition.x < EdgeTolerance * Screen.width)
+    //         moveDirection += Vector3.left;
+    //     else if (mousePosition.x > (1f - EdgeTolerance) * Screen.width)
+    //         moveDirection += Vector3.right;
 
-        if (mousePosition.y < EdgeTolerance * Screen.height)
-            moveDirection += Vector3.down;
-        else if (mousePosition.y > (1f - EdgeTolerance) * Screen.height)
-            moveDirection += Vector3.up;
+    //     if (mousePosition.y < EdgeTolerance * Screen.height)
+    //         moveDirection += Vector3.down;
+    //     else if (mousePosition.y > (1f - EdgeTolerance) * Screen.height)
+    //         moveDirection += Vector3.up;
 
-        _mousePanDirection = moveDirection * 0.25f;
-    }
+    //     _mousePanDirection = moveDirection * 0.25f;
+    // }
 
     private void OnScrollWheel(InputValue value)
     {

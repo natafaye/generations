@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62788880ddb636948b1f22ac48c4ede5, type: 3}
   m_Name: Grass
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Grass
-  <Sprite>k__BackingField: {fileID: 7823753872517910967, guid: 11386934c45f8844485e8aca90ca0892, type: 3}
-  category: 0
-  availableJobs: []
+  Name: 
+  Sprite: {fileID: 7823753872517910967, guid: 11386934c45f8844485e8aca90ca0892, type: 3}
+  MaxHealth: 0
+  destroyProductType: {fileID: 0}
+  destroyProductAmount: 0

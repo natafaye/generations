@@ -26,5 +26,20 @@ public class InputManager : MonoBehaviour {
     private void OnClick(InputValue value) 
     {
         OnClickInput?.Invoke(value);
+        //DetectObject();
     }
+
+    // private void DetectObject()
+    // {
+    //     Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+    //     RaycastHit2D[] allHits = Physics2D.GetRayIntersectionAll(ray);
+    //     for(int i = 0; i < allHits.Length; i++)
+    //     {
+    //         if(allHits[0].collider != null)
+    //         {
+    //             Debug.Log(allHits[0].collider.name);
+    //         }
+    //     }
+        
+    // }
 }

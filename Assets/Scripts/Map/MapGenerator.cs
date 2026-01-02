@@ -5,13 +5,11 @@ using UnityEngine.Tilemaps;
 public class MapGenerator
 {
     public static MapCell[,] Generate(
-        int seed, int width, int height, BiomeType biome, Tilemap tilemap,
-        EntityManager entityManager, FirmnessType[] firmnessTypes, CellType waterCellType
+        MapCell[,] cells, int seed, int width, int height, BiomeType biome, Tilemap tilemap,
+        FirmnessType[] firmnessTypes, CellType waterCellType
     ) {
         var heightMap = NoiseGenerator.Generate(seed, width, height, biome.HeightWaves);
         var firmnessMap = NoiseGenerator.Generate(seed, width, height, biome.FirmnessWaves);
-
-        MapCell[,] cells = new MapCell[width, height];
 
         for (int y = 0; y < height; y++)
         {
@@ -71,12 +69,11 @@ public class MapGenerator
 
                 if (structureType != null)
                 {
-                    var structure = entityManager.Create(structureType);
-                    mapCell.MoveToCell(structure);
+                    Entity entity = GameManager.Instance.CreateEntity(structureType, mapCell.MapPosition);
                     if (structureType is PlantType type)
                     {
                         int maxAge = type.ageToStartHarvestCycle + (int)Math.Round(type.timeToFullHarvest * 1.5);
-                        ((Plant)structure).Age = UnityEngine.Random.Range(0, maxAge);
+                        ((Plant)entity).Age = UnityEngine.Random.Range(0, maxAge);
                     }
                 }
 

@@ -22,7 +22,7 @@ public class MapCell : IHeapItem<MapCell>
 
 	// Layers of the Cell
 	public bool HasRoof;
-	public IEntity Contents;
+	public Entity Contents;
 	// TODO: Floor
 	public CellType CellType;
 
@@ -31,13 +31,6 @@ public class MapCell : IHeapItem<MapCell>
 	{
 		CellType = cellType;
 		MapPosition = mapPosition;
-	}
-
-	public void MoveToCell(IEntity entity)
-	{
-		entity.MapPosition = MapPosition;
-		entity.Transform.position = WorldPosition;
-		Contents = entity;
 	}
 
 

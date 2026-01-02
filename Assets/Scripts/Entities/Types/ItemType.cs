@@ -1,13 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ItemType", menuName = "ScriptableObjects/ItemType")]
-public class ItemType : ScriptableObject, IEntityType
+public class ItemType : EntityType
 {
-    [field: SerializeField]
-    public string Name { get; set; }
-    [field: SerializeField]
-    public Sprite Sprite { get; set; }
-    public ItemCategory category;
-    public int stackSize;
-    public int maxHealth;
+    public int StackSize;
 }

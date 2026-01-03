@@ -1,4 +1,5 @@
 public class Item : Entity
 {
-    public int ItemsInStack { get; set; }
+    // Convenience property for getting the correctly typed Data
+    public new ItemData Data { get { return (ItemData)base.Data; } }
 }

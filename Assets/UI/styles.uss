@@ -1,0 +1,89 @@
+.bottom-ui {
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    flex-direction: row;
+    right: 0;
+}
+
+.card {
+    background-color: rgb(189, 188, 188);
+    width: 500px;
+    flex-direction: row;
+    padding-top: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+}
+
+.selected-image {
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+}
+
+.name-label {
+    height: 26px;
+    -unity-font-style: bold;
+    font-size: 20px;
+}
+
+.status-label {
+    -unity-font-style: italic;
+    padding-bottom: 10px;
+}
+
+.properties-container {
+    padding-left: 15px;
+    flex-grow: 1;
+}
+
+.property-group {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.progress-bar {
+    flex-grow: 1;
+}
+
+.progress-bar .unity-progress-bar__progress {
+    background-color: rgb(23, 73, 94);
+}
+
+.progress-bar Label {
+    color: rgb(255, 255, 255);
+}
+
+#job-buttons {
+    flex-grow: 1;
+    flex-direction: row;
+}
+
+.job-button {
+    background-color: rgba(255, 255, 255, 0);
+    border-width: 0;
+}
+
+.job-button:hover {
+    scale: 1.05;
+}
+
+.job-button.selected-button Image {
+    background-color: rgb(78, 102, 112)
+}
+
+.job-button Image {
+    background-image: none;
+    background-color: rgb(205, 205, 205);
+    -unity-background-scale-mode: scale-to-fit;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.job-button Label {
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 5px rgb(0, 0, 0);
+    -unity-font-style: bold;
+}

@@ -10,13 +10,13 @@ public class EntityManager : MonoBehaviour
 
     // Sub lists
     public List<Meeple> Meeples { 
-        get { return Entities.Where(e => e.Type is MeepleType).Cast<Meeple>().ToList(); }
+        get { return Entities.Where(e => e.Data.Type is MeepleType).Cast<Meeple>().ToList(); }
     }
     public List<Structure> Structures { 
-        get { return Entities.Where(e => e.Type is StructureType).Cast<Structure>().ToList(); }
+        get { return Entities.Where(e => e.Data.Type is StructureType).Cast<Structure>().ToList(); }
     }
     public List<Item> Items { 
-        get { return Entities.Where(e => e.Type is ItemType).Cast<Item>().ToList(); }
+        get { return Entities.Where(e => e.Data.Type is ItemType).Cast<Item>().ToList(); }
     }
 
     // Game Object Creation
@@ -36,17 +36,17 @@ public class EntityManager : MonoBehaviour
         foreach (Entity entity in entities) entity.Tick();
     }
 
-    public Entity CreateEntity(EntityType entityType)
+    public Entity CreateEntity(EntityData data)
     {
         Entity entity;
-        if (entityType is StructureType)
+        if (data.Type is StructureType)
         {
-            if (entityType is PlantType) 
+            if (data.Type is PlantType) 
                 entity = Instantiate(PlantPrefab, StructuresContainer);
             else 
                 entity = Instantiate(StructurePrefab, StructuresContainer);
         }
-        else if (entityType is ItemType)
+        else if (data.Type is ItemType)
         {
             entity = Instantiate(ItemPrefab, ItemsContainer);
         }
@@ -54,9 +54,8 @@ public class EntityManager : MonoBehaviour
         {
             entity = Instantiate(MeeplePrefab, MeeplesContainer);
         }
-        entity.Name = entityType.Name;
-        entity.Type = entityType;
-        entity.SpriteRenderer.sprite = entityType.Sprite;
+        entity.Data = data;
+        entity.SpriteRenderer.sprite = data.Type.Sprite;
         Entities.Add(entity);
         return entity;
     }

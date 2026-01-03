@@ -33,14 +33,19 @@ public class GameManager : MonoBehaviour
         MapManager.Init(MapWidth, MapHeight);
         CameraManager.Init(MapWidth, MapHeight);
 
-        CreateEntity(Human, new Vector2Int(2, 2));
+        CreateEntity(new MeepleData(Human), new Vector2Int(2, 2));
         
         InvokeRepeating(nameof(Tick), 1f, 1f);
     }
 
-    public Entity CreateEntity(EntityType entityType, Vector2Int location)
+    void Tick()
     {
-        Entity entity = EntityManager.CreateEntity(entityType);
+        EntityManager.Tick();
+    }
+
+    public Entity CreateEntity(EntityData data, Vector2Int location)
+    {
+        Entity entity = EntityManager.CreateEntity(data);
         MapManager.MoveEntity(entity, location);
         return entity;
     }
@@ -49,10 +54,5 @@ public class GameManager : MonoBehaviour
     {
         EntityManager.DestroyEntity(entity);
         MapManager.RemoveEntity(entity);
-    }
-
-    void Tick()
-    {
-        EntityManager.Tick();
     }
 }

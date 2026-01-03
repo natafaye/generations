@@ -8,7 +8,7 @@ public delegate bool CellCheckerCallback(MapCell cellToCheck);
 
 public class MapManager : MonoBehaviour
 {
-	// Game data
+	// Game Data
 	public int Width;
 	public int Height;
 	public BiomeType Biome;
@@ -16,10 +16,11 @@ public class MapManager : MonoBehaviour
 	private Vector2Int[] _movementsByDistance;
 	public int Seed;
 
-	// Unity objects
+	// Unity Objects
 	private Grid _grid;
 	private Tilemap _tilemap;
 
+	// Scriptable Objects
 	public FirmnessType[] FirmnessTypes;
 	public CellType WaterCellType;
 
@@ -146,63 +147,6 @@ public class MapManager : MonoBehaviour
 
 		return neighbours;
 	}
-
-	// public MapNode ClosestPassableNode(MapNode node)
-	// {
-	// 	int maxRadius = Mathf.Max(gridSizeX, gridSizeY) / 2;
-	// 	for (int i = 1; i < maxRadius; i++)
-	// 	{
-	// 		MapNode n = FindPassableInRadius(node.GridPosition.x, node.GridPosition.y, i);
-	// 		if (n != null) return n;
-	// 	}
-	// 	return null;
-	// }
-
-	// MapNode FindPassableInRadius(int centerX, int centerY, int radius)
-	// {
-	// 	for (int i = -radius; i <= radius; i++)
-	// 	{
-	// 		int verticalSearchX = i + centerX;
-	// 		int horizontalSearchY = i + centerY;
-
-	// 		// top
-	// 		if (InBounds(verticalSearchX, centerY + radius))
-	// 		{
-	// 			if (grid[verticalSearchX, centerY + radius].Passable)
-	// 			{
-	// 				return grid[verticalSearchX, centerY + radius];
-	// 			}
-	// 		}
-
-	// 		// bottom
-	// 		if (InBounds(verticalSearchX, centerY - radius))
-	// 		{
-	// 			if (grid[verticalSearchX, centerY - radius].Passable)
-	// 			{
-	// 				return grid[verticalSearchX, centerY - radius];
-	// 			}
-	// 		}
-	// 		// right
-	// 		if (InBounds(centerY + radius, horizontalSearchY))
-	// 		{
-	// 			if (grid[centerX + radius, horizontalSearchY].Passable)
-	// 			{
-	// 				return grid[centerX + radius, horizontalSearchY];
-	// 			}
-	// 		}
-
-	// 		// left
-	// 		if (InBounds(centerY - radius, horizontalSearchY))
-	// 		{
-	// 			if (grid[centerX - radius, horizontalSearchY].Passable)
-	// 			{
-	// 				return grid[centerX - radius, horizontalSearchY];
-	// 			}
-	// 		}
-	// 	}
-
-	// 	return null;
-	// }
 
 	void OnDrawGizmos()
 	{

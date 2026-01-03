@@ -10,8 +10,13 @@ public class SelectionManager: MonoBehaviour
     public Camera MainCamera;
     
     public UIDocument UIDoc;
-    public VisualTreeAsset SelectedMeepleTemplate;
     private VisualElement _selectedDisplay;
+    public VisualTreeAsset SelectedTemplate;
+    public VisualTreeAsset MeepleTemplate;
+    public VisualTreeAsset StructureTemplate;
+    public VisualTreeAsset PlantTemplate;
+    public VisualTreeAsset ItemTemplate;
+    public VisualTreeAsset JobButtonTemplate;
 
     void Start()
     {
@@ -21,59 +26,86 @@ public class SelectionManager: MonoBehaviour
 
     private void OnClick(InputValue value)
     {
-        // Use ray collision to find what was clicked
+        // Use ray collision to find out what entity was clicked
         if (value.Get<float>() == 0) return;
         var rayHit = Physics2D.GetRayIntersection(MainCamera.ScreenPointToRay(Mouse.current.position.ReadValue()));
         if (!rayHit.collider) return;
-
-        // Check if a different selectable has been clicked
         GameObject clickedObject = rayHit.collider.gameObject;
-        var newSelected = clickedObject.GetComponent<Entity>();
+        Entity newSelected = clickedObject.GetComponent<Entity>();
+
+        // If it's the same entity as before, ignore it
         if (newSelected == Selected) return;
 
-        _selectedDisplay.Clear();
-
-        if (newSelected == null)
-        {
-            Selected = null;
-            return;
-        }
-
-        // Update the selected
-        if (Selected != null) Selected.IsSelected = false;
-        newSelected.IsSelected = true;
+        // Update what's selected
+        if (Selected != null) Selected.Data.IsSelected = false;
+        if (newSelected != null) newSelected.Data.IsSelected = true;
         Selected = newSelected;
 
-        // Update the selection display
-        if (Selected is Meeple meeple)
+        // Keep the selected display up to date, even with info that isn't data bound
+        UpdateSelectedDisplay();
+        Selected.Data.OnChange += UpdateSelectedDisplay;
+    }
+
+    private void UpdateSelectedDisplay()
+    {
+        _selectedDisplay.Clear();
+
+        // If there's nothing selected, nothing to display
+        if(Selected == null) return;
+
+        // Set up the general layout and entity data
+        VisualElement bottomUI = new();
+        SelectedTemplate.CloneTree(bottomUI);
+        bottomUI.dataSource = Selected.Data;
+
+        // Fill in the type-specific properties
+        VisualElement properties = bottomUI.Q<VisualElement>("properties");
+        if (Selected is Meeple)
+            MeepleTemplate.CloneTree(properties);
+        else if (Selected is Plant)
+            PlantTemplate.CloneTree(properties);
+        else if (Selected is Structure)
+            StructureTemplate.CloneTree(properties);
+        else if (Selected is Item)
+            StructureTemplate.CloneTree(properties);
+
+        // Add it to the UI
+        _selectedDisplay.Add(bottomUI);
+
+        // Show buttons for all available jobs
+        UpdateButtonsDisplay();
+    }
+
+    private void UpdateButtonsDisplay()
+    {
+        if(Selected == null) return;
+
+        VisualElement buttonContainer = _selectedDisplay.Q<VisualElement>("job-buttons");
+        buttonContainer.Clear();
+
+        // Add a button for each available job
+        foreach(JobTypeData jobType in Selected.Data.AvailableJobs)
         {
-            VisualElement newElement = new();
-            SelectedMeepleTemplate.CloneTree(newElement);
-            newElement.dataSource = meeple;
-            _selectedDisplay.Add(newElement);
-        }
-        else if (Selected is Structure structure)
-        {
-            Label label = new();
-            label.text = structure.Name;
-            if(structure is Plant plant)
-            {
-                label.text += " " + plant.Age;
+            VisualElement buttonBox = new();
+            JobButtonTemplate.CloneTree(buttonBox);
+            buttonBox.dataSource = jobType;
+            Button button = buttonBox.Q<Button>("job-button");
+
+            // If this job is already queued, the button unqueues it
+            if(Selected.Data.QueuedJob?.TypeData == jobType) {
+                button.AddToClassList("selected-button");
+                button.clicked += () => {
+                    JobManager.Instance.RemoveJob(Selected.Data.QueuedJob);
+                    button.RemoveFromClassList("selected-button");
+                };
+            // If this job isn't already queued, the button queues it
+            } else {
+                button.clicked += () => {
+                    JobManager.Instance.AddJob(jobType, Selected);
+                    UpdateButtonsDisplay();
+                };
             }
-            _selectedDisplay.Add(label);
-            foreach (JobType job in structure.GetAvailableJobs())
-            {
-                Button jobButton = new();
-                jobButton.text = job.ToString();
-                jobButton.clicked += () => JobManager.Instance.AddJob(job, structure);
-                _selectedDisplay.Add(jobButton);
-            }
-        }
-        else if (Selected is Item item)
-        {
-            Label label = new();
-            label.text = item.Name;
-            _selectedDisplay.Add(label);
+            buttonContainer.Add(buttonBox);
         }
     }
 }

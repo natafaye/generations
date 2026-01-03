@@ -1,0 +1,15 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/styles.uss?fileID=7433441132597879392&amp;guid=9c31d21a307929948a0a7518dfba5d03&amp;type=3#styles"/>
+    <ui:Button data-source-type="JobTypeData, Assembly-CSharp" name="job-button" class="job-button">
+        <ui:Image source="project://database/Assets/Sprites/noun-averruncator-7838539.png?fileID=6778096562878039736&amp;guid=9523cc1299e8d0f4abcd5c21f9aba5bf&amp;type=3#noun-averruncator-7838539_0" name="button-image">
+            <Bindings>
+                <ui:DataBinding property="source" data-source-path="Sprite" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Image>
+        <ui:Label text="_jobname_" name="button-label">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="Name" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+    </ui:Button>
+</ui:UXML>

@@ -1,0 +1,13 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/styles.uss?fileID=7433441132597879392&amp;guid=9c31d21a307929948a0a7518dfba5d03&amp;type=3#styles"/>
+    <ui:VisualElement name="VisualElement" data-source-type="StructureData, Assembly-CSharp" style="flex-grow: 1;">
+        <ui:VisualElement name="health-row" class="property-group">
+            <ui:Label text="Health"/>
+            <ui:ProgressBar value="20" class="progress-bar">
+                <Bindings>
+                    <ui:DataBinding property="value" data-source-path="Health" binding-mode="ToTarget"/>
+                </Bindings>
+            </ui:ProgressBar>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

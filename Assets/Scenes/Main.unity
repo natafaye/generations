@@ -207,9 +207,13 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 2a9f20c0433ec7a4192ca493bc56b5a4, type: 3}
   m_SortingOrder: 0
+  m_Position: 0
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
 --- !u!4 &330405075
 Transform:
   m_ObjectHideFlags: 0
@@ -290,7 +294,6 @@ MonoBehaviour:
   m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
-  m_Version: 2
   m_TaaSettings:
     m_Quality: 3
     m_FrameInfluence: 0.1
@@ -298,6 +301,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -899,6 +903,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &1535217496
 TilemapRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -917,6 +922,8 @@ TilemapRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -938,9 +945,11 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 2144569775
   m_SortingLayer: 1
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -948,7 +957,6 @@ TilemapRenderer:
   m_SortOrder: 0
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
-  m_MaskInteraction: 0
 --- !u!1839735485 &1535217497
 Tilemap:
   m_ObjectHideFlags: 0
@@ -1084,7 +1092,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 197d8895daad60149b3c54d9c2063ed9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  JobTypesData: {fileID: 11400000, guid: 07ba092f6caf8d943a428fe7fac236c1, type: 2}
+  JobTypes:
+  - Type: 0
+    Name: Destroy
+    Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  - Type: 1
+    Name: Cut
+    Sprite: {fileID: 6778096562878039736, guid: 9523cc1299e8d0f4abcd5c21f9aba5bf, type: 3}
+  - Type: 2
+    Name: Harvest
+    Sprite: {fileID: 7633303723083878540, guid: 7060b7708af185d43b1980f163650b40, type: 3}
 --- !u!114 &1745607455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1100,7 +1117,12 @@ MonoBehaviour:
   InputManager: {fileID: 793677428}
   MainCamera: {fileID: 519420031}
   UIDoc: {fileID: 330405074}
-  SelectedMeepleTemplate: {fileID: 9197481963319205126, guid: 1ec2e98033a303f43978775229b07148, type: 3}
+  SelectedTemplate: {fileID: 9197481963319205126, guid: ceed26b757e6d43498bdbef9cc8eeee0, type: 3}
+  MeepleTemplate: {fileID: 9197481963319205126, guid: 1ec2e98033a303f43978775229b07148, type: 3}
+  StructureTemplate: {fileID: 9197481963319205126, guid: 14fcc4fe3a3b11a40a33027906b1b163, type: 3}
+  PlantTemplate: {fileID: 9197481963319205126, guid: 875d38078ed1a8e4b90967677322c745, type: 3}
+  ItemTemplate: {fileID: 9197481963319205126, guid: 22859e42b81d3f14b82d0da25066e516, type: 3}
+  JobButtonTemplate: {fileID: 9197481963319205126, guid: e8ee698e63bbf80498e659980d7f8926, type: 3}
 --- !u!1 &1804638490
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,6 +1209,7 @@ CircleCollider2D:
   m_Radius: 0.5
 --- !u!212 &1804638494
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1205,6 +1228,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1226,9 +1251,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 20
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -3279404402307220432, guid: 6efdf2115b32a3848a3e1c244d066bd1, type: 3}
   m_Color: {r: 1, g: 0.854902, b: 0.7254902, a: 1}
   m_FlipX: 0
@@ -1238,7 +1265,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1804638495
 Transform:
@@ -1267,9 +1293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87074b609a3d76f4cb02012fb104daad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Name: 
-  Type: {fileID: 0}
-  Health: 0
   Transform: {fileID: 0}
   SpriteRenderer: {fileID: 0}
   GameObject: {fileID: 0}

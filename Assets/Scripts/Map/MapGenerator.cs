@@ -19,15 +19,15 @@ public class MapGenerator
                 StructureType structureType = null;
 
                 // TODO: Outside of range of array
-                var cellHeight = (int)MathF.Floor(heightMap[x, y] * 10);
+                var cellHeight = (int)MathF.Floor(heightMap[x, y] * 9);
                 // Debug.Log("Cell Height: " + cellHeight);
                 HeightLevel heightLevel = biome.MoistureType.Heights[cellHeight];
                 
-                var cellFirmness = (int)MathF.Floor(firmnessMap[x, y] * 3);
+                var cellFirmness = (int)MathF.Floor(firmnessMap[x, y] * 2);
                 // Debug.Log("Cell Firmness: " + cellFirmness);
                 FirmnessType firmnessType = firmnessTypes[cellFirmness];
 
-                var cellFertility = (int)MathF.Floor(firmnessMap[x, y] * 101);
+                var cellFertility = (int)MathF.Floor(firmnessMap[x, y] * 100);
                 if (cellFirmness != 1) cellFertility = 0;
 
                 switch (heightLevel)
@@ -69,12 +69,14 @@ public class MapGenerator
 
                 if (structureType != null)
                 {
-                    Entity entity = GameManager.Instance.CreateEntity(structureType, mapCell.MapPosition);
+                    StructureData data = new(structureType);
                     if (structureType is PlantType type)
                     {
                         int maxAge = type.ageToStartHarvestCycle + (int)Math.Round(type.timeToFullHarvest * 1.5);
-                        ((Plant)entity).Age = UnityEngine.Random.Range(0, maxAge);
+                        int randomAge = UnityEngine.Random.Range(0, maxAge);
+                        data = new PlantData(structureType, randomAge);
                     }
+                    GameManager.Instance.CreateEntity(data, mapCell.MapPosition);
                 }
 
                 tilemap.SetTile(new Vector3Int(x, y, 0), cellType.Tile);

@@ -1,13 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class JobManager: MonoBehaviour
 {
     public static JobManager Instance { get; private set; }
 
+    public JobTypeData[] JobTypes;
+
     public List<JobWork> Jobs = new();
     public List<JobWork> ReservedJobs = new();
-    public JobTypesData JobTypesData;
 
     void Awake()
     {
@@ -19,17 +21,23 @@ public class JobManager: MonoBehaviour
         Instance = this;
     }
 
-    public void AddJob(JobType jobType, Structure structure)
+    public JobTypeData GetTypeData(JobType type)
     {
-        JobWork newJob = new(jobType, JobTypesData.GetSprite(jobType), structure);
+        return JobTypes.First(j => j.Type == type);
+    }
+
+    public void AddJob(JobTypeData jobTypeData, Entity target)
+    {
+        JobWork newJob = new(jobTypeData, target);
         Jobs.Add(newJob);
 
-        // If this replaces another job, get rid of that job
-        if (structure.QueuedJob != null) RemoveJob(structure.QueuedJob);
+        // Entities can only have one job queued at a time
+        if (target.Data.QueuedJob != null) RemoveJob(target.Data.QueuedJob);
 
-        // Set this as the structure's queued job
-        structure.QueuedJob = newJob;
-        Debug.Log("Added " + jobType);
+        // Set this as the entity's queued job
+        target.Data.QueuedJob = newJob;
+
+        Debug.Log(target.Data.QueuedJob);
     }
 
     public void RemoveJob(JobWork jobToRemove)
@@ -42,7 +50,7 @@ public class JobManager: MonoBehaviour
         else if (ReservedJobs.Contains(jobToRemove))
         {
             // If it's reserved
-            if (jobToRemove.worker) jobToRemove.worker.RemoveCurrentJob();
+            if (jobToRemove.Worker) jobToRemove.Worker.RemoveCurrentJob();
             ReservedJobs.Remove(jobToRemove);
         }
     }
@@ -54,14 +62,14 @@ public class JobManager: MonoBehaviour
         var reserved = Jobs[0];
         Jobs.RemoveAt(0);
         ReservedJobs.Add(reserved);
-        reserved.worker = meeple;
-        Debug.Log("Reserved " + reserved.type);
+        reserved.Worker = meeple;
+        Debug.Log("Reserved " + reserved.TypeData.Type);
         return reserved;
     }
 
     public void WorkJob(JobWork job)
     {
-        job.workLeft--;
+        job.WorkLeft--;
     }
 
     public void FinishJob(JobWork finishedJob)
@@ -70,9 +78,10 @@ public class JobManager: MonoBehaviour
         ReservedJobs.Remove(finishedJob);
 
         // Create any produced items
-        JobResult result = finishedJob.target.FinishJob(finishedJob.type);
-        if (result.amount == 0) return;
-        Item product = (Item)GameManager.Instance.CreateEntity(result.type, finishedJob.target.MapPosition);
-        product.ItemsInStack = result.amount;
+        JobResult result = finishedJob.Target.FinishJob(finishedJob.TypeData.Type);
+        if (result.amount > 0) {
+            ItemData data = new(result.type, result.amount);
+            GameManager.Instance.CreateEntity(data, finishedJob.Target.MapPosition);
+        }
     }
 }

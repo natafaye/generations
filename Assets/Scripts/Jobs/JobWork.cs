@@ -1,4 +1,3 @@
-using UnityEngine;
 
 public class JobResult
 {
@@ -8,19 +7,17 @@ public class JobResult
 
 public class JobWork
 {
-    public JobType type;
-    public Sprite sprite;
-    public Entity target;
-    public Meeple worker;
-    public int workLeft;
+    public JobTypeData TypeData;
+    public Entity Target;
+    public Meeple Worker;
+    public int WorkLeft;
 
-    public bool Finished { get { return workLeft == 0; } }
+    public bool Finished { get { return WorkLeft == 0; } }
 
-    public JobWork(JobType jobType, Sprite jobSprite, Entity jobTarget)
+    public JobWork(JobTypeData typeData, Entity jobTarget)
     {
-        type = jobType;
-        sprite = jobSprite;
-        target = jobTarget;
-        workLeft = jobTarget.GetJobWorkAmount(jobType);
+        TypeData = typeData;
+        Target = jobTarget;
+        WorkLeft = jobTarget.GetJobWorkAmount(typeData.Type);
     }
 }

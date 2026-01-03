@@ -1,31 +1,20 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 public class Plant : Structure
 {
-    // Convenience property for getting Type as PlantType
-    public PlantType PlantType { get { return (PlantType)Type; } }
-    // How many ticks has this plant grown
-    public int Age = 0;
-    // At what age will this plant next be minimum harvestable (low chance of any products)
-    public int NextMinHarvestAge;
-    // At what age will this plant next be fully harvestable (high chance of max products)
-    public int NextFullHarvestAge;
-    // Is this plant harvestable
-    public bool Harvestable { get { return Age > NextMinHarvestAge; } }
+    // Convenience property for getting Data as PlantData
+    public new PlantData Data {  get { return (PlantData)base.Data; } }
 
-    public override void Start()
+    protected override void OnDataChange()
     {
-        base.Start();
-        NextMinHarvestAge = PlantType.ageToStartHarvestCycle + PlantType.timeToMinHarvest;
-        NextFullHarvestAge = PlantType.ageToStartHarvestCycle + PlantType.timeToFullHarvest;
+        base.OnDataChange();
+        SpriteRenderer.sprite = Data.Sprite;
     }
     
     public override void Tick()
     {
         base.Tick();
-        // TODO: check if in good condition to grow
         Grow();
     }
 
@@ -33,60 +22,42 @@ public class Plant : Structure
 
     void Grow()
     {
-        Age++;
-        // Set sprite based on if it's harvestable or not
-        SpriteRenderer.sprite = Harvestable ? PlantType.harvestableSprite : PlantType.Sprite;
+        // TODO: check if in good condition to grow
+        Data.Age++;
     }
 
     JobResult Harvest()
     {
         // Figure out how many products
-        float harvestPercentage = (Age - NextMinHarvestAge) / (NextFullHarvestAge - NextMinHarvestAge);
+        float harvestPercentage = Data.HarvestablePercentage;
         if(harvestPercentage > 1) harvestPercentage = 1;
-        float unroundedAmount = harvestPercentage * PlantType.maxProductAmount;
+        float unroundedAmount = harvestPercentage * Data.Type.maxProductAmount;
         int amount = (int)Math.Round(unroundedAmount, MidpointRounding.AwayFromZero);
         // Use the leftover as a percent chance of getting one more
         float randomNumber = new System.Random().Next();
         if(randomNumber >= unroundedAmount % 1) amount++;
             
         // Reset harvest cycle
-        NextMinHarvestAge = Age + PlantType.timeToMinHarvest;
-        NextFullHarvestAge = Age + PlantType.timeToFullHarvest;
-        SpriteRenderer.sprite = PlantType.Sprite;
-        if(PlantType.destroyedByHarvest) DestroyEntity();
+        Data.NextMinHarvestAge = Data.Age + Data.Type.timeToMinHarvest;
+        Data.NextFullHarvestAge = Data.Age + Data.Type.timeToFullHarvest;
+        SpriteRenderer.sprite = Data.Type.Sprite;
+        if(Data.Type.destroyedByHarvest) DestroyEntity();
 
-        return new JobResult() { type = PlantType.productType, amount = amount };
+        return new JobResult() { type = Data.Type.productType, amount = amount };
     }
 
     #endregion
 
     #region Jobs
 
-    public override JobType[] GetAvailableJobs()
-    {
-        Debug.Log("Getting jobs!");
-        // Get inherited jobs
-        var jobTypes = base.GetAvailableJobs();
-        // Add constant jobs
-        jobTypes = jobTypes.Concat(new JobType[] {
-            JobType.Cut
-        }).ToArray();
-        // Only add harvest job if harvestable
-        if(Harvestable) jobTypes = jobTypes.Concat(new JobType[] {
-            JobType.Harvest
-        }).ToArray();
-        // Return all jobs
-        return jobTypes;
-    }
-
     public override int GetJobWorkAmount(JobType type)
     {
         return type switch
         {
             // Destroying takes 1/10th the health
-            JobType.Destroy => (int)Math.Round(Health / (double)10),
-            JobType.Cut => PlantType.timeToCut,
-            JobType.Harvest => PlantType.timeToHarvest,
+            JobType.Destroy => (int)Math.Round(Data.Health / (double)10),
+            JobType.Cut => Data.Type.timeToCut,
+            JobType.Harvest => Data.Type.timeToHarvest,
             _ => 10,
         };
     }

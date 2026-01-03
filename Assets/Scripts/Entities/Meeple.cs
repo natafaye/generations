@@ -5,91 +5,17 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class Meeple : Entity
 {
-    public Animator Animator;
+    // Convenience property for getting the correctly typed Data
+    public new MeepleData Data { get { return (MeepleData)base.Data; } }
     
-    private readonly Color _noTint = new(0, 0, 0, 0);
+    public Animator Animator;
     public Color DistressTint = new(1, 0, 0, 0.5f);
-
-    private bool _isSelected = false;
-    public override bool IsSelected
-    {
-        get { return _isSelected; }
-        set
-        {
-            _isSelected = value;
-            if (_isSelected)
-                SpriteRenderer.material.SetInt("_ShowOutline", 1);
-            else
-                SpriteRenderer.material.SetInt("_ShowOutline", 0);
-        }
-    }
 
     public override Vector2Int MapPosition
     {
         get { return GameManager.Instance.MapManager.WorldToMap(Transform.position); }
         set { Transform.position = GameManager.Instance.MapManager.MapToWorld(value); }
     }
-
-    private bool _inDistress;
-    public bool InDistress
-    {
-        get { return _inDistress; }
-        private set
-        {
-            _inDistress = value;
-            if (_inDistress)
-            {
-                SpriteRenderer.material.SetColor("_Tint", DistressTint);
-            }
-            else
-            {
-                SpriteRenderer.material.SetColor("_Tint", _noTint);
-            }
-        }
-    }
-
-    private int _food = 100;
-    public int Food
-    {
-        get { return _food; }
-        set
-        {
-            _food = value;
-            InDistress = _food < 0;
-        }
-    }
-
-    private bool _asleep = false;
-    public bool Asleep
-    {
-        get { return _asleep; }
-        set
-        {
-            _asleep = value;
-            if (_asleep)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 90);
-            }
-            else
-            {
-                transform.rotation = new();
-            }
-        }
-    }
-    private int _sleep = 100;
-    public int Sleep
-    {
-        get { return _sleep; }
-        set
-        {
-            _sleep = value;
-            // Wake up when you're filled up on sleep
-            if (Asleep && _sleep >= 5) Asleep = false;
-            // Fall asleep when you hit zero
-            if (_sleep <= 0) Asleep = true;
-        }
-    }
-
 
     void Awake()
     {
@@ -101,55 +27,59 @@ public class Meeple : Entity
         Move();
     }
 
+    protected override void OnDataChange()
+    {
+        base.OnDataChange();
+        SpriteRenderer.material.SetColor("_Tint", Data.InDistress ? DistressTint : new(0, 0, 0, 0));
+        SpriteRenderer.material.SetInt("_ShowOutline", Data.IsSelected ? 1 : 0);
+        transform.rotation = Data.Asleep ? Quaternion.Euler(0, 0, 90) : new();
+    }
+
     public override void Tick()
     {
         base.Tick();
         
-        Debug.Log("Meeple Tick");
-        Food--;
+        Data.Food--;
 
-        if (Asleep) Sleep++;
-        else Sleep--;
+        if (Data.Asleep) Data.Sleep++;
+        else Data.Sleep--;
 
-        if(!Asleep) Work();
+        if(!Data.Asleep) Work();
     }
 
     #region Jobs
 
-    public JobWork CurrentJob;
-
     public void Work()
     {
         // If there is not a job, try to get one
-        if (CurrentJob == null)
+        if (Data.CurrentJob == null)
         {
-            Debug.Log("Trying to get a job");
-            CurrentJob = JobManager.Instance.ReserveJob(this);
-            if (CurrentJob == null) return;
-            MovementTarget = CurrentJob.target.MapPosition;
+            Data.CurrentJob = JobManager.Instance.ReserveJob(this);
+            if (Data.CurrentJob == null) return;
+            MovementTarget = Data.CurrentJob.Target.MapPosition;
             Debug.Log("Got a job at " + MovementTarget);
         }
         // If the job has been fully worked, finish it
-        else if (CurrentJob.Finished)
+        else if (Data.CurrentJob.Finished)
         {
             Debug.Log("Finishing the job");
-            JobManager.Instance.FinishJob(CurrentJob);
-            CurrentJob = null;
+            JobManager.Instance.FinishJob(Data.CurrentJob);
+            Data.CurrentJob = null;
         }
         // If the unfinished job is close enough, work it
-        else if (DistanceBetween(MapPosition, CurrentJob.target.MapPosition) < 1.5)
+        else if (DistanceBetween(MapPosition, Data.CurrentJob.Target.MapPosition) < 1.5)
         {
-            Debug.Log("Working the job with " + CurrentJob.workLeft + " left");
+            Debug.Log("Working the job with " + Data.CurrentJob.WorkLeft + " left");
             MovementTarget = null;
-            JobManager.Instance.WorkJob(CurrentJob);
+            JobManager.Instance.WorkJob(Data.CurrentJob);
         }
     }
 
     public void RemoveCurrentJob()
     {
-        if (CurrentJob == null) return;
-        CurrentJob.worker = null;
-        CurrentJob = null;
+        if (Data.CurrentJob == null) return;
+        Data.CurrentJob.Worker = null;
+        Data.CurrentJob = null;
         MovementTarget = null;
     }
 
@@ -157,7 +87,6 @@ public class Meeple : Entity
 
     #region Movement
 
-    // Map movement
     private Vector2? _movementTarget;
     private Queue<Vector2> _path; 
     public Vector2? MovementTarget
@@ -171,15 +100,14 @@ public class Meeple : Entity
         }
     }
 
-    private float _baseSpeed = 4;
     public float Speed
     {
         get
         {
-            var speed = _baseSpeed;
-            if (Asleep) speed = 0;
-            else if (Sleep <= 2) speed *= 0.5f;
-            if (Food <= 0) speed *= 0.5f;
+            var speed = Data.Type.BaseSpeed;
+            if (Data.Asleep) speed = 0;
+            else if (Data.Sleep <= 2) speed *= 0.5f;
+            if (Data.Food <= 0) speed *= 0.5f;
             return speed;
         }
     }
@@ -197,9 +125,12 @@ public class Meeple : Entity
         // Get a new path, if there isn't one (setting _path to null forces re-pathing)
         _path ??= new Queue<Vector2>(GameManager.Instance.MapManager.FindPath(transform.position, (Vector2)MovementTarget));
 
+        // Check if a potentially newly generated path is empty
+        if(_path?.Count == 0) return;
+
         // Get the next point on the path
         Vector2 currentWaypoint = _path.Peek();
-        Debug.Log("Next waypoint " + currentWaypoint);
+        //Debug.Log("Next waypoint " + currentWaypoint);
 
         // Move towards the point
         transform.position = Vector2.MoveTowards(transform.position, currentWaypoint, Speed * Time.deltaTime);

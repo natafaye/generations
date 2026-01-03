@@ -15,3 +15,4 @@ MonoBehaviour:
   Name: Human
   Sprite: {fileID: 0}
   MaxHealth: 100
+  BaseSpeed: 4

@@ -23,7 +23,17 @@ public class PlantData : StructureData
     }
 
     // At what age will this plant next be minimum harvestable (low chance of any products)
-    public int NextMinHarvestAge;
+    private int _nextMinHarvestAge;
+    public int NextMinHarvestAge
+    {
+        get { return _nextMinHarvestAge; }
+        set
+        {
+            if(value == _nextMinHarvestAge) return;
+            _nextMinHarvestAge = value;
+            OnChange?.Invoke();
+        }
+    }
     // At what age will this plant next be fully harvestable (high chance of max products)
     public int NextFullHarvestAge;
 

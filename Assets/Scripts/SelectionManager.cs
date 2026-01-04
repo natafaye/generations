@@ -84,6 +84,7 @@ public class SelectionManager: MonoBehaviour
         buttonContainer.Clear();
 
         // Add a button for each available job
+        Debug.Log(Selected.Data.AvailableJobs);
         foreach(JobTypeData jobType in Selected.Data.AvailableJobs)
         {
             VisualElement buttonBox = new();
@@ -94,16 +95,10 @@ public class SelectionManager: MonoBehaviour
             // If this job is already queued, the button unqueues it
             if(Selected.Data.QueuedJob?.TypeData == jobType) {
                 button.AddToClassList("selected-button");
-                button.clicked += () => {
-                    JobManager.Instance.RemoveJob(Selected.Data.QueuedJob);
-                    button.RemoveFromClassList("selected-button");
-                };
+                button.clicked += () => JobManager.Instance.RemoveJob(Selected.Data.QueuedJob);
             // If this job isn't already queued, the button queues it
             } else {
-                button.clicked += () => {
-                    JobManager.Instance.AddJob(jobType, Selected);
-                    UpdateButtonsDisplay();
-                };
+                button.clicked += () => JobManager.Instance.AddJob(jobType, Selected);
             }
             buttonContainer.Add(buttonBox);
         }

@@ -15,7 +15,7 @@ public class EntityManager : MonoBehaviour
     public List<Structure> Structures { 
         get { return Entities.Where(e => e.Data.Type is StructureType).Cast<Structure>().ToList(); }
     }
-    public List<Item> Items { 
+    public List<Item> Foods { 
         get { return Entities.Where(e => e.Data.Type is ItemType).Cast<Item>().ToList(); }
     }
 

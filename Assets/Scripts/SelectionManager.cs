@@ -84,7 +84,6 @@ public class SelectionManager: MonoBehaviour
         buttonContainer.Clear();
 
         // Add a button for each available job
-        Debug.Log(Selected.Data.AvailableJobs);
         foreach(JobTypeData jobType in Selected.Data.AvailableJobs)
         {
             VisualElement buttonBox = new();

@@ -5,7 +5,9 @@ public enum JobType
 {
     Destroy,
     Cut,
-    Harvest
+    Harvest,
+    Eat,
+    Sleep
 }
 
 [Serializable]

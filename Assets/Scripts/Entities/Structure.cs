@@ -3,7 +3,7 @@ public class Structure : Entity
     // Convenience property for getting Data as StructureData
     public new StructureData Data { get { return (StructureData)base.Data; } }
 
-    protected JobResult DestroyEntity()
+    protected JobResult DestroySelf()
     {
         GameManager.Instance.DestroyEntity(this);
         return new JobResult() { 

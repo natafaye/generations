@@ -4,4 +4,6 @@ using UnityEngine;
 public class MeepleType : EntityType
 {
     public float BaseSpeed;
+    public int MaxFood;
+    public ItemType[] Foods;
 }

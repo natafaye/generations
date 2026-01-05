@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Human
   m_EditorClassIdentifier: 
   Name: Human
-  Sprite: {fileID: 0}
+  Sprite: {fileID: 1302723820812287101, guid: 0c421660d7170a64b8f332884efee5ea, type: 3}
   MaxHealth: 100
   BaseSpeed: 4
+  MaxFood: 400
+  Foods:
+  - {fileID: 11400000, guid: 2232017a861f54a4ebaaca6ee0b3e821, type: 2}

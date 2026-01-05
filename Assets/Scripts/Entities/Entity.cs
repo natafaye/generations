@@ -28,10 +28,13 @@ public class Entity : MonoBehaviour
 
     public SpriteRenderer Overlay;
 
-    public virtual int GetJobWorkAmount(JobType jobType) { return 0; }
+    public virtual int GetJobWorkAmount(JobType jobType)
+    {
+        if(jobType == JobType.Sleep) return 30;
+        return 10;
+    }
 
-    public virtual JobResult FinishJob(JobType jobType) {
-        Data.QueuedJob = null;
+    public virtual JobResult OnJobFinishedAt(JobWork job) {
         return new JobResult(); 
     }
 

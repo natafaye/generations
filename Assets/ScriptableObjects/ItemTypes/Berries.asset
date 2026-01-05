@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a1cc5c121e93954f8628a3acfef3f0f, type: 3}
+  m_Script: {fileID: 11500000, guid: f75dc0cd9abe97e4599dcf1913069e49, type: 3}
   m_Name: Berries
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::FoodType
   Name: Berries
-  Sprite: {fileID: -755600408, guid: d02b24ac01e6b614d8142ce7041c25cf, type: 3}
+  Sprite: {fileID: 6146782616825927046, guid: 5d0ac5b704f58d14198e3bfb11d3e9d3, type: 3}
   MaxHealth: 100
   StackSize: 50
+  NutritionValue: 30
+  TimeToEat: 10

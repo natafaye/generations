@@ -14,6 +14,7 @@ public class EntityData
     // Changeable Properties
 
     private int _health;
+    [CreateProperty]
     public int Health { 
         get { return _health; }
         set
@@ -72,6 +73,6 @@ public class EntityData
     {
         Name = type.Name;
         Type = type;
-        _health = type.MaxHealth;
+        Health = type.MaxHealth;
     }
 }

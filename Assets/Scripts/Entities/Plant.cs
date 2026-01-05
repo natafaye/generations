@@ -41,7 +41,7 @@ public class Plant : Structure
         Data.NextMinHarvestAge = Data.Age + Data.Type.timeToMinHarvest;
         Data.NextFullHarvestAge = Data.Age + Data.Type.timeToFullHarvest;
         SpriteRenderer.sprite = Data.Type.Sprite;
-        if(Data.Type.destroyedByHarvest) DestroyEntity();
+        if(Data.Type.destroyedByHarvest) DestroySelf();
 
         return new JobResult() { type = Data.Type.productType, amount = amount };
     }
@@ -54,20 +54,21 @@ public class Plant : Structure
     {
         return type switch
         {
-            // Destroying takes 1/10th the health
+            // Destroying takes 1/10th the health in ticks
             JobType.Destroy => (int)Math.Round(Data.Health / (double)10),
             JobType.Cut => Data.Type.timeToCut,
             JobType.Harvest => Data.Type.timeToHarvest,
+            JobType.Eat => Data.Type.timeToHarvest,
             _ => 10,
         };
     }
 
-    public override JobResult FinishJob(JobType type)
+    public override JobResult OnJobFinishedAt(JobWork job)
     {
-        base.FinishJob(type);
-        if(type == JobType.Cut) return DestroyEntity();
-        else if(type == JobType.Harvest) return Harvest();
-        else return new JobResult();
+        if(job.TypeData.Type == JobType.Cut) return DestroySelf();
+        else if(job.TypeData.Type == JobType.Harvest) return Harvest();
+        else if(job.TypeData.Type == JobType.Eat) return Harvest();
+        else return base.OnJobFinishedAt(job);
     }
 
     #endregion

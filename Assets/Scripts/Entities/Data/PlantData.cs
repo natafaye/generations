@@ -11,6 +11,7 @@ public class PlantData : StructureData
 
     // How many ticks has this plant grown
     private int _age;
+    [CreateProperty]
     public int Age
     {
         get { return _age; }
@@ -53,7 +54,7 @@ public class PlantData : StructureData
     [CreateProperty]
     public float CurrentMaturity
     {
-        get { return 100 - Math.Max(0, NextFullHarvestAge - Age); }
+        get { return MaxMaturity - Math.Max(NextFullHarvestAge - Age, 0); }
     }
     [CreateProperty]
     public float MaxMaturity
@@ -82,7 +83,7 @@ public class PlantData : StructureData
 
     // Constructor
 
-    public PlantData(EntityType type, int age = 0) : base(type)
+    public PlantData(PlantType type, int age = 0) : base(type)
     {
         Age = age;
         NextMinHarvestAge = Type.ageToStartHarvestCycle + Type.timeToMinHarvest;

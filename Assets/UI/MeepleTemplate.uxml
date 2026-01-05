@@ -16,6 +16,7 @@
             <ui:ProgressBar value="20" class="progress-bar">
                 <Bindings>
                     <ui:DataBinding property="value" data-source-path="Food" binding-mode="ToTarget"/>
+                    <ui:DataBinding property="highValue" data-source-path="Type.MaxFood" binding-mode="ToTarget"/>
                 </Bindings>
             </ui:ProgressBar>
         </ui:VisualElement>

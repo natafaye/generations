@@ -1,5 +1,4 @@
-using System.Numerics;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -54,5 +53,13 @@ public class GameManager : MonoBehaviour
     {
         EntityManager.DestroyEntity(entity);
         MapManager.RemoveEntity(entity);
+    }
+
+    public Entity FindNearestUnreservedEntityOfType(EntityType entityType, Vector2 location)
+    {
+        return EntityManager.Entities
+            .Where(e => e.Data.Type == entityType && e.Data.QueuedJob == null)
+            .OrderBy((a) => Distance.Between(a.MapPosition, location))
+            .FirstOrDefault();
     }
 }

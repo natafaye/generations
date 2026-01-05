@@ -70,11 +70,11 @@ public class MapGenerator
                 if (structureType != null)
                 {
                     StructureData data = new(structureType);
-                    if (structureType is PlantType type)
+                    if (structureType is PlantType plantType)
                     {
-                        int maxAge = type.ageToStartHarvestCycle + (int)Math.Round(type.timeToFullHarvest * 1.5);
+                        int maxAge = plantType.ageToStartHarvestCycle + (int)Math.Round(plantType.timeToFullHarvest * 1.5);
                         int randomAge = UnityEngine.Random.Range(0, maxAge);
-                        data = new PlantData(structureType, randomAge);
+                        data = new PlantData(plantType, randomAge);
                     }
                     GameManager.Instance.CreateEntity(data, mapCell.MapPosition);
                 }

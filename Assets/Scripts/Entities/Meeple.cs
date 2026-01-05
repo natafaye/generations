@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,46 +40,86 @@ public class Meeple : Entity
         
         Data.Food--;
 
-        if (Data.Asleep) Data.Sleep++;
+        if (Data.Asleep) Data.Sleep += 3;
         else Data.Sleep--;
 
-        if(!Data.Asleep) Work();
+        Act();
     }
 
     #region Jobs
 
-    public void Work()
+    public void Act()
     {
-        // If there is not a job, try to get one
-        if (Data.CurrentJob == null)
+        // If too hungry, make eating your job
+        if(!Data.Asleep && Data.Food < 20 && Data.CurrentJob?.TypeData.Type != JobType.Eat)
         {
-            Data.CurrentJob = JobManager.Instance.ReserveJob(this);
-            if (Data.CurrentJob == null) return;
-            MovementTarget = Data.CurrentJob.Target.MapPosition;
-            Debug.Log("Got a job at " + MovementTarget);
+            bool reservedEating = ReserveFoodJob();
+            // If food was found to eat, this tick is done, if not, continue to other ifs
+            if(reservedEating) return;
         }
-        // If the job has been fully worked, finish it
-        else if (Data.CurrentJob.Finished)
+        // If too tired, make sleeping your job
+        if(Data.Sleep < 10 && Data.CurrentJob?.TypeData.Type != JobType.Sleep)
         {
-            Debug.Log("Finishing the job");
-            JobManager.Instance.FinishJob(Data.CurrentJob);
-            Data.CurrentJob = null;
+            ReserveSleepJob();
         }
-        // If the unfinished job is close enough, work it
-        else if (DistanceBetween(MapPosition, Data.CurrentJob.Target.MapPosition) < 1.5)
+        // If you don't have a job, try to reserve one
+        else if (Data.CurrentJob == null)
         {
-            Debug.Log("Working the job with " + Data.CurrentJob.WorkLeft + " left");
-            MovementTarget = null;
+            //if(Data.CurrentJob != null) Debug.Log("Got a job at " + MovementTarget);
+            JobManager.Instance.ReserveJob(this);
+            MovementTarget = Data.CurrentJob?.Target.MapPosition;
+        }
+        // If your job is close enough, work it
+        else if (Distance.Between(MapPosition, Data.CurrentJob.Target.MapPosition) < 1.5)
+        {
+            Debug.Log(Data.CurrentJob.TypeData.Name + "ing with " + Data.CurrentJob.WorkLeft + " work left");
             JobManager.Instance.WorkJob(Data.CurrentJob);
+            MovementTarget = null;
         }
     }
 
-    public void RemoveCurrentJob()
+    public void ReserveSleepJob()
     {
-        if (Data.CurrentJob == null) return;
-        Data.CurrentJob.Worker = null;
-        Data.CurrentJob = null;
-        MovementTarget = null;
+        // Pick a spot to sleep (or just at yourself)
+        Entity sleepSpot = (Data.Bed != null) ? Data.Bed : this;
+        // Make sleeping your private job
+        JobManager.Instance.ReservePrivateJob(JobType.Sleep, sleepSpot, this);
+        // Set yourself as asleep
+        Data.Asleep = true;
+
+    }
+
+    public bool ReserveFoodJob()
+    {
+        // Find the best food, then the closest of that best food
+        Entity food = null;
+        foreach(EntityType foodType in Data.Type.Foods) {
+            food = GameManager.Instance.FindNearestUnreservedEntityOfType(foodType, MapPosition);
+            if(food != null) break;
+        }
+        if(food) Debug.Log("Time to eat " + food?.Data.Name);
+        if(!food) Debug.Log("Couldn't find anything to eat");
+        // If you couldn't find any food, then just give up
+        if(!food) return false;
+        // Make eating your private job
+        JobManager.Instance.ReservePrivateJob(JobType.Eat, food, this);
+        return true;
+    }
+
+    public JobResult OnJobFinishedBy(JobWork finishedJob, JobResult result)
+    {
+        if(finishedJob.TypeData.Type == JobType.Eat)
+        {
+            Data.Food += ((FoodType)result.type).NutritionValue * result.amount;
+            return new JobResult();
+        }
+        else if(finishedJob.TypeData.Type == JobType.Sleep)
+        {
+            Data.Asleep = false;
+            return new JobResult();
+        }
+        // TODO: increase skills
+        return result;
     }
 
     #endregion
@@ -110,11 +149,6 @@ public class Meeple : Entity
             if (Data.Food <= 0) speed *= 0.5f;
             return speed;
         }
-    }
-
-    public double DistanceBetween(Vector2 a, Vector2 b)
-    {
-        return Math.Sqrt(Math.Pow(a.x - b.x, 2) + Math.Pow(a.y - b.y, 2));
     }
 
     private void Move()

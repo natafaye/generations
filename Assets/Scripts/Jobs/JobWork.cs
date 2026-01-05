@@ -14,10 +14,10 @@ public class JobWork
 
     public bool Finished { get { return WorkLeft == 0; } }
 
-    public JobWork(JobTypeData typeData, Entity jobTarget)
+    public JobWork(JobTypeData typeData, Entity jobTarget, int workLeft)
     {
         TypeData = typeData;
         Target = jobTarget;
-        WorkLeft = jobTarget.GetJobWorkAmount(typeData.Type);
+        WorkLeft = workLeft;
     }
 }

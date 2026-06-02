@@ -62,5 +62,8 @@ TagManager:
   - name: Roofs
     uniqueID: 373986967
     locked: 0
+  - name: UI Overlay
+    uniqueID: 1934594945
+    locked: 0
   m_RenderingLayers:
   - Default

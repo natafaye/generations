@@ -1,23 +1,26 @@
+namespace Generations {
 
-public class JobResult
-{
-    public ItemType type;
-    public int amount = 0;
-}
-
-public class JobWork
-{
-    public JobTypeData TypeData;
-    public Entity Target;
-    public Meeple Worker;
-    public int WorkLeft;
-
-    public bool Finished { get { return WorkLeft == 0; } }
-
-    public JobWork(JobTypeData typeData, Entity jobTarget, int workLeft)
+    public class JobResult
     {
-        TypeData = typeData;
-        Target = jobTarget;
-        WorkLeft = workLeft;
+        public ItemType type;
+        public int amount = 0;
     }
+
+    public class JobWork
+    {
+        public JobTypeData TypeData;
+        public EntityData Target;
+        public WorkAbility Worker;
+        public int WorkLeft;
+
+        public bool Finished { get { return WorkLeft == 0; } }
+
+        public JobWork(JobTypeData typeData, EntityData jobTarget, int workLeft)
+        {
+            TypeData = typeData;
+            Target = jobTarget;
+            WorkLeft = workLeft;
+        }
+    }
+
 }

@@ -1,4 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement name="selected-display" style="bottom: 0; position: absolute; right: 0; left: 0;"/>
-    <ui:VisualElement name="build-menu" style="bottom: 0; position: absolute; right: 0; left: auto; top: 0;"/>
+    <ui:Template name="SelectedEntityView" src="project://database/Assets/UI/SelectedEntityView.uxml?fileID=9197481963319205126&amp;guid=ceed26b757e6d43498bdbef9cc8eeee0&amp;type=3#SelectedEntityView"/>
+    <Style src="project://database/Assets/UI/styles.uss?fileID=7433441132597879392&amp;guid=9c31d21a307929948a0a7518dfba5d03&amp;type=3#styles"/>
+    <ui:VisualElement name="build-menu" picking-mode="Ignore" style="bottom: 0; position: absolute; right: 0; left: auto; top: 0;">
+        <ui:Button text="Build" name="build-button"/>
+        <ui:VisualElement name="types-menu" picking-mode="Ignore" style="flex-grow: 1; display: none;"/>
+    </ui:VisualElement>
+    <ui:Instance template="SelectedEntityView" name="selected-entity" class="selected-entity"/>
 </ui:UXML>

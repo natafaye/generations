@@ -17,3 +17,7 @@ MonoBehaviour:
   MaxHealth: 0
   destroyProductType: {fileID: 0}
   destroyProductAmount: 0
+  RotatedSprite: {fileID: 0}
+  CellSize: {x: 1, y: 1}
+  Materials: []
+  IsBed: 0

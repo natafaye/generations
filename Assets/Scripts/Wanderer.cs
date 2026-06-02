@@ -6,7 +6,6 @@ using UnityEngine;
 public class Wanderer : MonoBehaviour
 {
     Animator animator;
-    Meeple meeple;
     Rigidbody2D rigidBody;
 
     // A minimum and maximum time delay for taking a decision, choosing a direction to move in
@@ -21,7 +20,6 @@ public class Wanderer : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        meeple = GetComponent<Meeple>();
         rigidBody = GetComponent<Rigidbody2D>();
 
         // Set a random time delay for taking a decision ( changing direction, or standing in place for a while )
@@ -39,13 +37,13 @@ public class Wanderer : MonoBehaviour
         float yDir = direction.y;
 
         Vector2 position = rigidBody.position;
-        position += meeple.Speed * Time.deltaTime * direction;
+        position += 5 * Time.deltaTime * direction;
         rigidBody.MovePosition(position);
 
         if (animator)
         {
-            animator.SetFloat("MoveX", xDir * meeple.Speed);
-            animator.SetFloat("MoveY", yDir * meeple.Speed);
+            animator.SetFloat("MoveX", xDir * 5);
+            animator.SetFloat("MoveY", yDir * 5);
         }
 
         if (decisionTimeCount > 0) decisionTimeCount -= Time.deltaTime;

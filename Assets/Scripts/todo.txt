@@ -1,0 +1,34 @@
+---- FEATURES ---
+* Building
+* Sleeping in bed
+* Hauling to stockpile zone
+
+---- BUGS ----
+* Fix WASD navigation (jumping around)
+* Adding a 2-cell structure (like the bed) should mark both cell's contents
+* Clicking with a blueprint in hand doesn't select an entity
+
+--- REFACTORS --
+* Refactor MapCell so Pathfinding is in its own class or object
+* Remove all singletons
+
+--- ART ----
+Bed at rotation 3
+
+
+
+Blueprints
+- blueprints should still be passable
+- blueprints should be cancellable
+- blueprints should create a job for bringing supplies
+- blueprints should track how much supplies they have
+- blueprints should track how much building work is left
+
+
+Update plant properties UI to bind to grow ability properties
+
+MapManager should listen to EntityCreate and EntityDelete to add and remove contents of cells
+
+Should meeples be added to cell contents? If not need to exclude
+
+Fix positioning issues

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3274765951988786082}
   - component: {fileID: 6783013335871518182}
   - component: {fileID: 6003484747473126104}
-  - component: {fileID: 4169135760045275290}
+  - component: {fileID: 1769789584186312828}
   m_Layer: 0
   m_Name: Meeple
   m_TagString: Untagged
@@ -38,6 +38,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3274765951988786082
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -56,6 +57,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -77,9 +80,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1852344941
   m_SortingLayer: 6
   m_SortingOrder: 20
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 1302723820812287101, guid: 0c421660d7170a64b8f332884efee5ea, type: 3}
   m_Color: {r: 1, g: 0.854902, b: 0.7254902, a: 1}
   m_FlipX: 0
@@ -89,7 +94,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 1
 --- !u!58 &6783013335871518182
 CircleCollider2D:
@@ -149,7 +153,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4169135760045275290
+--- !u!114 &1769789584186312828
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,19 +162,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1069269789272188940}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87074b609a3d76f4cb02012fb104daad, type: 3}
+  m_Script: {fileID: 11500000, guid: de7ced1fa182a1b4cae97185da535278, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  Name: 
-  Type: {fileID: 11400000, guid: 017080667d27d314db701f1f03635b1b, type: 2}
-  Health: 0
+  m_EditorClassIdentifier: Assembly-CSharp::EntityFrame
   Transform: {fileID: 8266585262912804022}
   SpriteRenderer: {fileID: 3274765951988786082}
   GameObject: {fileID: 1069269789272188940}
   Overlay: {fileID: 3806404866115990154}
-  Animator: {fileID: 6003484747473126104}
-  DistressTint: {r: 1, g: 0, b: 0, a: 0.5}
-  Map: {fileID: 0}
+  Animator: {fileID: 0}
 --- !u!1 &8894279666266283849
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,6 +204,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3806404866115990154
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -223,6 +223,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -244,9 +246,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 396446455
   m_SortingLayer: 4
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.81960785}
   m_FlipX: 0
@@ -256,5 +260,4 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0

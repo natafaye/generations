@@ -1,0 +1,20 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/styles.uss?fileID=7433441132597879392&amp;guid=9c31d21a307929948a0a7518dfba5d03&amp;type=3#styles"/>
+    <ui:Button text="&#10;" name="" data-source-type="StructureType, Assembly-CSharp" parse-escape-sequences="false" class="build-type-button" style="flex-direction: row;">
+        <ui:Image style="height: 80px; aspect-ratio: auto; width: auto;">
+            <Bindings>
+                <ui:DataBinding property="source" data-source-path="Sprite" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Image>
+        <ui:Label text="Label" style="flex-grow: 1; -unity-text-align: middle-left;">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="Name" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+        <ui:ListView item-template="project://database/Assets/UI/CostItem.uxml?fileID=9197481963319205126&amp;guid=df23b33c4a8b3c04981e7c86f4ee9d99&amp;type=3#CostItem" orientation="Horizontal" data-source-path="" binding-source-selection-mode="AutoAssign" style="border-width: 0; justify-content: flex-start; align-items: auto; flex-direction: column; align-self: center;">
+            <Bindings>
+                <ui:DataBinding property="itemsSource" data-source-path="Materials" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:ListView>
+    </ui:Button>
+</ui:UXML>

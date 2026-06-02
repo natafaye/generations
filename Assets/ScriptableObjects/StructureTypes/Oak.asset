@@ -17,6 +17,10 @@ MonoBehaviour:
   MaxHealth: 100
   destroyProductType: {fileID: 0}
   destroyProductAmount: 0
+  RotatedSprite: {fileID: 0}
+  CellSize: {x: 1, y: 1}
+  Materials: []
+  IsBed: 0
   harvestableSprite: {fileID: 8755711497313211584, guid: 11386934c45f8844485e8aca90ca0892, type: 3}
   ageToStartHarvestCycle: 200
   timeToMinHarvest: 100

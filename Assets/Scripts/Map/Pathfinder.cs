@@ -2,101 +2,103 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-public static class Pathfinder
-{
-	public static Vector2[] FindPath(MapManager map, Vector2 from, Vector2 to)
+namespace Generations {
+	public static class Pathfinder
 	{
-		Vector2[] waypoints = new Vector2[0];
-		bool pathSuccess = false;
-
-		MapCell startCell = map.FindNearestCell(map.WorldToMap(from), cell => cell.Passable);
-		MapCell targetCell = map.FindNearestCell(map.WorldToMap(to), cell => cell.Passable);
-
-		if (startCell == null || targetCell == null) return waypoints;
-
-		startCell.Parent = startCell;
-
-		Heap<MapCell> openSet = new(map.Width * map.Height);
-		HashSet<MapCell> closedSet = new();
-		openSet.Add(startCell);
-
-		while (openSet.Count > 0)
+		public static Vector2[] FindPath(MapManager map, Vector2 from, Vector2 to)
 		{
-			MapCell currentCell = openSet.RemoveFirst();
-			closedSet.Add(currentCell);
+			Vector2[] waypoints = new Vector2[0];
+			bool pathSuccess = false;
 
-			if (currentCell == targetCell)
+			MapCell startCell = map.FindNearestCell(map.WorldToMap(from), cell => cell.Passable);
+			MapCell targetCell = map.FindNearestCell(map.WorldToMap(to), cell => cell.Passable);
+
+			if (startCell == null || targetCell == null) return waypoints;
+
+			startCell.Parent = startCell;
+
+			Heap<MapCell> openSet = new(map.Width * map.Height);
+			HashSet<MapCell> closedSet = new();
+			openSet.Add(startCell);
+
+			while (openSet.Count > 0)
 			{
-				pathSuccess = true;
-				break;
-			}
+				MapCell currentCell = openSet.RemoveFirst();
+				closedSet.Add(currentCell);
 
-			foreach (MapCell neighbour in map.GetNeighbours(currentCell))
-			{
-				if (!neighbour.Passable || closedSet.Contains(neighbour))
-					continue;
-
-				float newMovementCostToNeighbour = currentCell.GCost + GetDistance(currentCell, neighbour);
-				if (newMovementCostToNeighbour < neighbour.GCost || !openSet.Contains(neighbour))
+				if (currentCell == targetCell)
 				{
-					neighbour.GCost = newMovementCostToNeighbour;
-					neighbour.HCost = GetDistance(neighbour, targetCell);
-					neighbour.Parent = currentCell;
+					pathSuccess = true;
+					break;
+				}
 
-					if (!openSet.Contains(neighbour))
-						openSet.Add(neighbour);
-					else
-						openSet.UpdateItem(neighbour);
+				foreach (MapCell neighbour in map.GetNeighbours(currentCell))
+				{
+					if (!neighbour.Passable || closedSet.Contains(neighbour))
+						continue;
+
+					float newMovementCostToNeighbour = currentCell.GCost + GetDistance(currentCell, neighbour);
+					if (newMovementCostToNeighbour < neighbour.GCost || !openSet.Contains(neighbour))
+					{
+						neighbour.GCost = newMovementCostToNeighbour;
+						neighbour.HCost = GetDistance(neighbour, targetCell);
+						neighbour.Parent = currentCell;
+
+						if (!openSet.Contains(neighbour))
+							openSet.Add(neighbour);
+						else
+							openSet.UpdateItem(neighbour);
+					}
 				}
 			}
+
+			if (pathSuccess)
+				waypoints = RetracePath(startCell, targetCell);
+
+			return waypoints;
 		}
 
-		if (pathSuccess)
-			waypoints = RetracePath(startCell, targetCell);
-
-		return waypoints;
-	}
-
-	static Vector2[] RetracePath(MapCell startCell, MapCell endCell)
-	{
-		List<MapCell> path = new();
-		MapCell currentCell = endCell;
-
-		while (currentCell != startCell)
+		static Vector2[] RetracePath(MapCell startCell, MapCell endCell)
 		{
-			path.Add(currentCell);
-			currentCell = currentCell.Parent;
-		}
+			List<MapCell> path = new();
+			MapCell currentCell = endCell;
 
-		Vector2[] waypoints = SimplifyPath(path);
-		Array.Reverse(waypoints);
-		return waypoints;
-	}
-
-	static Vector2[] SimplifyPath(List<MapCell> path)
-	{
-		List<Vector2> waypoints = new();
-		Vector2 directionOld = Vector2.zero;
-
-		for (int i = 1; i < path.Count; i++)
-		{
-			Vector2 directionNew = path[i - 1].MapPosition - path[i].MapPosition;
-			if (directionNew != directionOld)
+			while (currentCell != startCell)
 			{
-				waypoints.Add(path[i].WorldPosition);
+				path.Add(currentCell);
+				currentCell = currentCell.Parent;
 			}
-			directionOld = directionNew;
+
+			Vector2[] waypoints = SimplifyPath(path);
+			Array.Reverse(waypoints);
+			return waypoints;
 		}
-		return waypoints.ToArray();
-	}
 
-	static float GetDistance(MapCell nodeA, MapCell nodeB)
-	{
-		float dstX = Mathf.Abs(nodeA.MapPosition.x - nodeB.MapPosition.x);
-		float dstY = Mathf.Abs(nodeA.MapPosition.y - nodeB.MapPosition.y);
+		static Vector2[] SimplifyPath(List<MapCell> path)
+		{
+			List<Vector2> waypoints = new();
+			Vector2 directionOld = Vector2.zero;
 
-		if (dstX > dstY)
-			return 14 * dstY + 10 * (dstX - dstY);
-		return 14 * dstX + 10 * (dstY - dstX);
+			for (int i = 1; i < path.Count; i++)
+			{
+				Vector2 directionNew = path[i - 1].MapPosition - path[i].MapPosition;
+				if (directionNew != directionOld)
+				{
+					waypoints.Add(path[i].WorldPosition);
+				}
+				directionOld = directionNew;
+			}
+			return waypoints.ToArray();
+		}
+
+		static float GetDistance(MapCell nodeA, MapCell nodeB)
+		{
+			float dstX = Mathf.Abs(nodeA.MapPosition.x - nodeB.MapPosition.x);
+			float dstY = Mathf.Abs(nodeA.MapPosition.y - nodeB.MapPosition.y);
+
+			if (dstX > dstY)
+				return 14 * dstY + 10 * (dstX - dstY);
+			return 14 * dstX + 10 * (dstY - dstX);
+		}
 	}
 }

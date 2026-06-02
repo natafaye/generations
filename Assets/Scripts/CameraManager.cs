@@ -1,95 +1,80 @@
+using Generations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraManager : MonoBehaviour
+namespace Generations
 {
-    // Input Manager
-    public InputManager InputManager;
-
-    // Pan
-    public float PanSpeed = 150;
-    public float PanDampening = 15f;
-    public float Margin = 1;
-    public int MapWidth;
-    public int MapHeight;
-    private Vector3 _panDirection;
-    
-    // Pan with mouse near screen edge
-    // public float EdgeTolerance = 0.05f;
-    // private Vector3 _mousePanDirection;
-    // public bool UseScreenEdge = true;
-
-    // Zoom
-    public float StepSize = -1;
-    public float ZoomSpeed = 2;
-    public float ZoomDampening = 7.5f;
-    public float MinZoom = 3;
-    public float MaxZoom = 10;
-    private float _zoomSize = 5;
-    private Camera _camera;
-
-    public void Init(int mapWidth, int mapHeight)
+    public class CameraManager : MonoBehaviour
     {
-        MapWidth = mapWidth;
-        MapHeight = mapHeight;
-        transform.position = new Vector3(MapWidth / 2, MapHeight / 2, -10);
-        _camera = GetComponentInChildren<Camera>();
+        // Pan
+        public float PanSpeed = 3f;
+        public float PanDampening = 15f;
+        public float Margin = 1;
+        private int _mapWidth;
+        private int _mapHeight;
+        private Vector3 _panDirection;
+        private Vector3 _targetPosition;
 
-        InputManager.OnNavigateInput += OnNavigate;
-        //InputManager.OnPointInput += OnPoint;
-        InputManager.OnScrollWheelInput += OnScrollWheel;
-    }
+        // Zoom
+        public float StepSize = -1;
+        public float ZoomSpeed = 2;
+        public float ZoomDampening = 7.5f;
+        public float MinZoom = 3;
+        public float MaxZoom = 10;
+        private float _zoomSize = 5;
+        private Camera _camera;
 
-    void Update()
-    {
-        // ---- PAN ----
-        // Only use screen edge panning if there is no keyboard panning currently happening
-        var moveDirection = _panDirection;
-        //if (_panDirection.sqrMagnitude < 0.1f && UseScreenEdge) moveDirection = _mousePanDirection;
-        // Scale the pan speed by the zoom size, so you pan faster when more zoomed out
-        Vector3 targetPosition = transform.position + (_zoomSize * PanSpeed * Time.deltaTime * moveDirection);
-        // Don't allow panning past the edges of the map
-        targetPosition = new Vector3(
-            Mathf.Clamp(targetPosition.x, 0 - Margin, MapWidth + Margin),
-            Mathf.Clamp(targetPosition.y, 0 - Margin, MapHeight + Margin),
-            transform.position.z
-        );
-        // Use lerp to smoothly move towards the target position
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * PanDampening);
+        public void Init(int mapWidth, int mapHeight)
+        {
+            _mapWidth = mapWidth;
+            _mapHeight = mapHeight;
+            Vector3 startPos = new Vector3(_mapWidth / 2f, _mapHeight / 2f, -10);
+            transform.position = startPos;
+            _targetPosition = startPos;
+            _camera = GetComponentInChildren<Camera>();
 
-        // ---- ZOOM ----
-        // Prevent repeating errors when other code errors
-        if(!_camera) return;
-        _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, _zoomSize, Time.deltaTime * ZoomDampening);
-    }
+            InputEvents.ScrollWheel += OnScrollWheel;
+        }
 
-    private void OnNavigate(InputValue value)
-    {
-        _panDirection = value.Get<Vector2>().normalized;
-    }
+        void Update()
+        {
+            // Prevent repeating errors when other code errors
+            if (!_camera) return;
 
-    // private void OnPoint()
-    // {
-    //     // If the mouse has moved, check if it's near an edge for screen edge panning
-    //     Vector2 mousePosition = Mouse.current.position.ReadValue();
-    //     Vector3 moveDirection = Vector3.zero;
+            // Poll keyboard input directly to avoid Navigate release callback issues
+            Vector3 inputDirection = Vector3.zero;
+            var keyboard = Keyboard.current;
+            if (keyboard != null)
+            {
+                if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) inputDirection.y += 1f;
+                if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) inputDirection.y -= 1f;
+                if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) inputDirection.x -= 1f;
+                if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) inputDirection.x += 1f;
+            }
+            _panDirection = inputDirection.normalized;
 
-    //     if (mousePosition.x < EdgeTolerance * Screen.width)
-    //         moveDirection += Vector3.left;
-    //     else if (mousePosition.x > (1f - EdgeTolerance) * Screen.width)
-    //         moveDirection += Vector3.right;
+            // ---- PAN ----
+            // Scale the target position linearly
+            _targetPosition += _zoomSize * PanSpeed * Time.deltaTime * _panDirection;
+            
+            // Clamp target position to the edges of the map
+            _targetPosition = new Vector3(
+                Mathf.Clamp(_targetPosition.x, 0 - Margin, _mapWidth + Margin),
+                Mathf.Clamp(_targetPosition.y, 0 - Margin, _mapHeight + Margin),
+                _targetPosition.z
+            );
+            
+            // Smoothly move transform towards target position
+            transform.position = Vector3.Lerp(transform.position, _targetPosition, Time.deltaTime * PanDampening);
 
-    //     if (mousePosition.y < EdgeTolerance * Screen.height)
-    //         moveDirection += Vector3.down;
-    //     else if (mousePosition.y > (1f - EdgeTolerance) * Screen.height)
-    //         moveDirection += Vector3.up;
+            // ---- ZOOM ----
+            _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, _zoomSize, Time.deltaTime * ZoomDampening);
+        }
 
-    //     _mousePanDirection = moveDirection * 0.25f;
-    // }
-
-    private void OnScrollWheel(InputValue value)
-    {
-        float scrollAmount = value.Get<Vector2>().normalized.y;
-        _zoomSize = Mathf.Clamp(_zoomSize + scrollAmount * StepSize, MinZoom, MaxZoom);
+        private void OnScrollWheel(InputValue value)
+        {
+            float scrollAmount = value.Get<Vector2>().normalized.y;
+            _zoomSize = Mathf.Clamp(_zoomSize + scrollAmount * StepSize, MinZoom, MaxZoom);
+        }
     }
 }
